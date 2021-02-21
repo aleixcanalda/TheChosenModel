@@ -50,16 +50,3 @@ class MyChain(Chain):
 			return True
 		else: 
 			return False
-
-
-
-if __name__ == "__main__":
-	pdb = open("1gzx_A_B.pdb")
-
-	parser = PDBParser(PERMISSIVE=1, QUIET=True)
-
-	struct = parser.get_structure(file="1gzx_A_B.pdb",id="A")
-	for model in struct:
-		for chain in model:
-			ch = MyChain(chain)
-			print(ch.compare_sequence("AGTGCTGATGCTGTGCTAGTCGTA"))
