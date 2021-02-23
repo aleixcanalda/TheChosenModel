@@ -76,12 +76,12 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 		interactions_dict[chain1.id] = {}
 	
 		for chain2 in unique_chain_list:
-
+			#if we're comparing the same chain, next
 			if chain1.id == chain2.id:
 				continue
-
+			#we obtain the interactions among the different chains
 			interact_1, interact_2 = chain1.interactions(chain2)
-
+			#if the interactions aren't empty (the chains don't interact) store the interactions as shown above
 			if interact_1 == set() and interact_2 == set():
 				continue
 
@@ -97,7 +97,7 @@ def start_model(interactions_dict,verbose=False):
 		sys.stderr.write("Deciding the starting model.")
 
 	most_inter = 0
-
+	#with this loop we'll look at all the chains and see which one has the most interactions
 	for chain in interactions_dict.keys():
 
 		chain_inter = len(interactions_dict[chain])
