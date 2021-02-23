@@ -18,6 +18,7 @@ def all_chains(PDB_files, verbose=False):
 			chain_num = 0
 
 			for chain in model: #Obtain all chains from the models
+				
 				new_instance = MyChain(chain)
 				chain_num += 1
 
@@ -26,8 +27,9 @@ def all_chains(PDB_files, verbose=False):
 
 				else:
 					unique = True
-					for instance in unique_chain_list:						
-						if instance.compare_sequence(new_instance.get_sequence_chain()) == True:
+					for instance in unique_chain_list:
+						
+						if instance.compare_sequence(new_instance) == True:
 							unique = False
 							break
 							
@@ -55,3 +57,80 @@ def chain_id(id_set):
 	for letter in alphabet:
 		if letter not in id_set:
 			return letter
+
+def get_interactions_dict(unique_chain_list, verbose=False):
+	""" 
+	Obtain the dictionary of interactions among all chains
+
+	The dictionary will look as follows:
+
+	[Chain1.id][Chain2.id] = ((atoms from chain1 that interact with chain2),(atoms from chain 2 that interact with chain 1))
+
+	"""
+	if verbose:
+		sys.stderr.write("Obtaining the interactions dictionary.")
+
+	interactions_dict = {}
+	for chain1 in unique_chain_list:
+
+		interactions_dict[chain1.id] = {}
+	
+		for chain2 in unique_chain_list:
+
+			if chain1.id == chain2.id:
+				continue
+
+			interact_1, interact_2 = chain1.interactions(chain2)
+
+			if interact_1 == set() and interact_2 == set():
+				continue
+
+			else:
+
+				interactions_dict[chain1.id][chain2.id]=(interact_1,interact_2)
+
+	return interactions_dict
+
+def start_model(interactions_dict,verbose=False):
+	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
+	if verbose:
+		sys.stderr.write("Deciding the starting model.")
+
+	most_inter = 0
+
+	for chain in interactions_dict.keys():
+
+		chain_inter = len(interactions_dict[chain])
+
+		if chain_inter > most_inter:
+
+			most_inter = chain_inter
+
+			starting_chain = chain
+
+	return starting_chain
+
+if __name__ == "__main__":
+	pdb = open("1gzx_A_B.pdb")
+
+	files=["1gzx_A_B.pdb","1gzx_A_C.pdb","1gzx_A_D.pdb"]
+
+	parser = PDBParser(PERMISSIVE=1, QUIET=True)
+
+	chains = []
+
+	struct = parser.get_structure(file="1gzx_A_B.pdb",id="A")
+	for model in struct:
+		for chain in model:
+			ch = MyChain(chain)
+			chains.append(ch)
+
+	unique_chain_list = all_chains(files)
+
+	int_dic = get_interactions_dict(unique_chain_list)
+
+	print(int_dic)
+
+	start_chain = start_model(int_dic)
+
+	print(start_chain)

@@ -41,12 +41,17 @@ class MyChain(Chain):
 
 	def compare_sequence(self,other_chain):
 		chain_seq = self.get_sequence_chain()
-		alignments = pairwise2.align.globalxx(chain_seq,other_chain)[0] #we'll align the two sequences, and get the score, but only the best one
+		other_chain_seq = other_chain.get_sequence_chain()
+		alignments = pairwise2.align.globalxx(chain_seq,other_chain_seq)[0] #we'll align the two sequences, and get the score, but only the best one
 		align1 = alignments[0]
 		align2 = alignments[1]
 		ident = sum(base1 == base2 for base1, base2 in zip(align1, align2))  # Calculate number of identities
 		if ident/len(align1) >= 0.95:
-			return True
+			#if the chains are homolog (have the same chain in stechiometry) but are in a different position in space, we'll still keep them
+			if (self.child_list[0].child_list[0].get_vector()[0],self.child_list[0].child_list[0].get_vector()[1]) == (other_chain.child_list[0].child_list[0].get_vector()[0],self.child_list[0].child_list[0].get_vector()[1]):
+				return True
+			else:
+				return False
 		else: 
 			return False
 
@@ -83,5 +88,5 @@ if __name__ == "__main__":
 			print(ch.compare_sequence("AGTGCTGATGCTGTGCTAGTCGTA"))
 
 	result=[]
-	result = chains[0].interactions(chains[1])
-	print(result[1])
+	result1, result2 = chains[0].interactions(chains[1])
+	print(result1)
