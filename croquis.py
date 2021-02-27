@@ -8,10 +8,18 @@ def superimpose(verbose=False, unique_chains_list):
 		for chain in unique_chains_list:
 			if chain in model:
 				continue
-			for chain_interaction in chain_in_model:
-				for chain_interaction2 in int_dict[chain.id]:
-					if chain_interaction == chain_interaction2:
-						
+			#for chain_interaction in chain_in_model:
+			#	for chain_interaction2 in int_dict[chain.id]:
+			#		if chain_interaction == chain_interaction2:
+
+
+			for chainin in chain_in_model:
+
+				if chain in chain_in_model: #if we already added the chain to our complex
+					break
+
+				elif chain in int_dict[chainin.id]: #if our chain interacts with a chain inside the complex
+			
 
 
 
