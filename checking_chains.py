@@ -160,6 +160,7 @@ def superimpose(verbose=False, unique_chains_list):
 				continue
 
 			not_added = True
+			#shuffle(chain_in_model): if we want to make more models, we should shuffle the chainsin the model so the chains are superimposed to different chains.
 			for chainin in chain_in_model:
 				
 				if chain.id in int_dict[chainin]: #if our chain interacts with a chain inside the complex
@@ -188,7 +189,12 @@ def superimpose(verbose=False, unique_chains_list):
 		chain_in_model.append(chain.id)
 	return model
 			
-	
+def save_PDB(verbose, model, output_path):
+	if verbose:
+		print("Saving model")
+	io = PDBIO()
+	io.set_structure(model)
+	io.save(output_path + "model.pdb")
 	
 if __name__ == "__main__":
 	pdb = open("1gzx_A_B.pdb")
