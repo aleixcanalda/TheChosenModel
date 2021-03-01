@@ -37,8 +37,8 @@ def superimpose(verbose=False, unique_chains_list):
 			if verbose and not_added:
 				print("%s could not be added to the model" %chain.id)
 			
-			n += 1
-			chain_in_model.append(chain.id)
+		n += 1
+		chain_in_model.append(chain.id)
 
 			
 def clashes(chain_atoms, model):
