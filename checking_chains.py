@@ -1,6 +1,6 @@
-#import IOinterface.py
 import sys
 from classes import *
+from IOinterface.py import *
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.Chain import Chain
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
