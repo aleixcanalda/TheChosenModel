@@ -189,7 +189,7 @@ def superimpose(verbose=False, unique_chains_list):
 		chain_in_model.append(chain.id)
 	return model
 			
-def save_PDB(verbose, model, output_path):
+def save_PDB(verbose=False, model, output_path):
 	if verbose:
 		print("Saving model")
 	io = PDBIO()
@@ -213,10 +213,9 @@ if __name__ == "__main__":
 
 	unique_chain_list = all_chains(files)
 
-	int_dic = get_interactions_dict(unique_chain_list)
+	 #int_dic = get_interactions_dict(unique_chain_list)
 
-	print(int_dic)
+	#start_chain = start_model(int_dic)
+	model = superimpose(unique_chain_list)
+	savePDB(mode, )
 
-	start_chain = start_model(int_dic)
-
-	print(start_chain)
