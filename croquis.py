@@ -12,6 +12,7 @@ def superimpose(verbose=False, unique_chains_list):
 			if chain in model:
 				continue
 
+			not_added = True
 			for chainin in chain_in_model:
 				
 				if chain.id in int_dict[chainin]: #if our chain interacts with a chain inside the complex
@@ -28,15 +29,14 @@ def superimpose(verbose=False, unique_chains_list):
 					else:
 						#move.parent = None
 						model.add(chain_copy)
-					
+						not_added = False
 
-
-
-					if verbose:
-						print("%s sucessfully added to the model" %chain.id)
-					break
-
-
+						if verbose:
+							print("%s sucessfully added to the model" %chain.id)
+						break
+			if verbose and not_added:
+				print("%s could not be added to the model" %chain.id)
+			
 			n += 1
 			chain_in_model.append(chain.id)
 
