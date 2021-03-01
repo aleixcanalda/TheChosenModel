@@ -110,6 +110,21 @@ def start_model(interactions_dict,verbose=False):
 
 	return starting_chain
 
+def equal_length_chains(chain1, chain2):
+	"""Equaling the lengths of two chains."""
+	
+	atoms1 = sorted(chain1.get_atoms())
+	atoms2 = sorted(chain2.get_atoms())
+
+	if len(atoms1) > len(atoms2):
+		return atoms1[:len(atoms2)], atoms2
+
+	elif len(atoms1) < len(atoms2):
+		return atoms1, atoms2[:len(atoms1)]
+	
+	else:
+		return atoms1, atoms2
+
 if __name__ == "__main__":
 	pdb = open("1gzx_A_B.pdb")
 
