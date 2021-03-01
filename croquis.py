@@ -1,9 +1,12 @@
 def superimpose(verbose=False, unique_chains_list):
+	""" """
 	int_dict = get_interactions_dict(unique_chains_list, verbose)
 	starting_model = start_model(int_dict, verbose)
-	model = next(x for x in unique_chains_list if x.id == starting_model)
+	model = Model("A") #Create new instance of class Model
+	model.add(next(x for x in unique_chains_list if x.id == starting_model))
 	chain_in_model = [starting_model]
-
+	
+	n = 0
 	while n<len(int_dict.keys()):
 		for chain in unique_chains_list:
 			if chain in model:
@@ -15,13 +18,22 @@ def superimpose(verbose=False, unique_chains_list):
 					newChain, modelChain = equal_length_chains(chain, next(x for x in unique_chains_list if x.id == chainin))
 					superimpose = Bio.PDB.Superimposer()
 					superimpose.set_atoms(modelChain, newChain)
-					superimpose.apply(chain)
-					chain_atoms = sorted(chain.get_atoms())
+					chain_copy = chain.copy()
+					superimpose.apply(chain_copy)
+					chain_atoms = sorted(chain_copy.get_atoms())
+					
+					if clashes(chain_atoms, model) == True:
+						continue
+						
+					else:
+						#move.parent = None
+						model.add(chain_copy)
 					
 
 
 
-
+					if verbose:
+						print("%s sucessfully added to the model" %chain.id)
 					break
 
 
