@@ -39,7 +39,7 @@ def superimpose(verbose=False, unique_chains_list):
 			
 		n += 1
 		chain_in_model.append(chain.id)
-
+	return model
 			
 def clashes(chain_atoms, model):
 	""" """
