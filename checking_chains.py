@@ -111,15 +111,15 @@ def start_model(interactions_dict,unique_chains_list,pdbfiles,verbose=False):
 
 			starting_chain = chain
 
-	model.add(next(x for x in unique_chains_list if x.id == starting_chain))
+	model.add(next(x for x in unique_chains_list if x.id == starting_chain)) #We add the chain with most interactions to the model.
 
 	second_chain = False
 
-	for inter in interactions_dict[starting_chain]:
+	for inter in interactions_dict[starting_chain]: #Search for a second chains that interacts with the starting chain.
 		if second_chain == True:
 			break
 		for file in pdbfiles:
-			if inter in str(file) and starting_chain in str(file):
+			if inter in str(file) and starting_chain in str(file): #If there is an input file with the interaction of these two chains, we add it to the model
 				model.add(next(x for x in unique_chains_list if x.id == inter))
 				second_chain = True
 				break
@@ -143,7 +143,7 @@ def equal_length_chains(chain1, chain2):
 
 
 def clashes(chain_atoms, model):
-	""" """
+	""" Calculates the clashes between two chains and returns whether the claches are in more than 5% of the atoms."""
 	
 	print("Hi")
 	backbone = {"CA", "C1\'"}
@@ -153,11 +153,11 @@ def clashes(chain_atoms, model):
 	
 	clash_count = 0
 	for atoms in chain_atoms:
-		clash = Nsearch.search(atoms.coord, 1)
-		if clash != []:
+		clash = Nsearch.search(atoms.coord, 1) #Returns the atoms that clash
+		if clash != []: #If there are atoms that clash, add 1 the the clash counter
 			clash_count += 1
 	print(clash_count/len(chain_atoms))
-	if clash_count/len(chain_atoms) >= 0.05:
+	if clash_count/len(chain_atoms) >= 0.05: #If the clashes are more than 5% of the atoms
 		return True
 	else:
 		return False
@@ -186,11 +186,12 @@ def superimpose(unique_chains_list,pdbfiles, verbose=False):
 				
 				if chain.id in int_dict[chainin]: #if our chain interacts with a chain inside the complex
 					newChain, modelChain = equal_length_chains(chain, next(x for x in unique_chains_list if x.id == chainin))
-					superimpose = Bio.PDB.Superimposer()
-					superimpose.set_atoms(modelChain, newChain)
-					chain_copy = chain.copy()
+					#Equaling the lentgh of the chains (needed for the Superimposer)
+					superimpose = Bio.PDB.Superimposer() #Create a Superimposer instance
+					superimpose.set_atoms(modelChain, newChain) #Create superimposition matrix
+					chain_copy = chain.copy() #Copy the chain so that we still keep the original version.
 					chain_copy.id = chain.id
-					superimpose.apply(chain_copy)
+					superimpose.apply(chain_copy) #Apply the superposition matrix
 					chain_atoms = sorted(chain_copy.get_atoms())
 					
 					if clashes(chain_atoms, model) == True:
