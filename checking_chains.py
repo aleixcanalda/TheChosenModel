@@ -187,7 +187,7 @@ def superimpose(unique_chains_list,pdbfiles, verbose=False):
 				if chain.id in int_dict[chainin]: #if our chain interacts with a chain inside the complex
 					newChain, modelChain = equal_length_chains(chain, next(x for x in unique_chains_list if x.id == chainin))
 					superimpose = Bio.PDB.Superimposer()
-					superimpose.set_atoms(newChain, modelChain)
+					superimpose.set_atoms(modelChain, newChain)
 					chain_copy = chain.copy()
 					chain_copy.id = chain.id
 					superimpose.apply(chain_copy)
