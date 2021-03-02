@@ -4,6 +4,7 @@ from classes import *
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.Chain import Chain
 from Bio.PDB.PDBIO import PDBIO
+import random
 
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
@@ -90,8 +91,11 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 
 	return interactions_dict
 
-def start_model(interactions_dict,verbose=False):
+def start_model(interactions_dict,unique_chains_list,pdbfiles,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
+
+	model = Model("A") #Create new instance of class Model
+	
 	if verbose:
 		sys.stderr.write("Deciding the starting model.")
 
@@ -107,7 +111,20 @@ def start_model(interactions_dict,verbose=False):
 
 			starting_chain = chain
 
-	return starting_chain
+	model.add(next(x for x in unique_chains_list if x.id == starting_chain))
+
+	second_chain = False
+
+	for inter in interactions_dict[starting_chain]:
+		if second_chain == True:
+			break
+		for file in pdbfiles:
+			if inter in str(file) and starting_chain in str(file):
+				model.add(next(x for x in unique_chains_list if x.id == inter))
+				second_chain = True
+				break
+
+	return model
 
 def equal_length_chains(chain1, chain2):
 	"""Equaling the lengths of two chains."""
@@ -139,28 +156,30 @@ def clashes(chain_atoms, model):
 		clash = Nsearch.search(atoms.coord, 1)
 		if clash != []:
 			clash_count += 1
+	print(clash_count/len(chain_atoms))
 	if clash_count/len(chain_atoms) >= 0.05:
 		return True
 	else:
 		return False
 
 	
-def superimpose(unique_chains_list, verbose=False):
+def superimpose(unique_chains_list,pdbfiles, verbose=False):
 	""" """
 	print(unique_chain_list)
 	int_dict = get_interactions_dict(unique_chains_list, verbose)
-	starting_model = start_model(int_dict, verbose)
-	model = Model("A") #Create new instance of class Model
-	model.add(next(x for x in unique_chains_list if x.id == starting_model))
-	chain_in_model = [starting_model]
+	model = start_model(int_dict, unique_chains_list,pdbfiles,verbose)
+	chain1, chain2 = model.get_chains()
+	chain_in_model = [chain1.id,chain2.id]
 	print(int_dict)
-	
-	n = 1
+	print(chain1)
+	print(chain2)
+	#random.shuffle(unique_chains_list)
+	n = 2
 	while n<len(int_dict.keys()):
 		for chain in unique_chains_list:
 			if chain.id in chain_in_model:
 				continue
-
+			print("looking at:%s"%(chain))	
 			not_added = True
 			#shuffle(chain_in_model): if we want to make more models, we should shuffle the chainsin the model so the chains are superimposed to different chains.
 			for chainin in chain_in_model:
@@ -168,7 +187,7 @@ def superimpose(unique_chains_list, verbose=False):
 				if chain.id in int_dict[chainin]: #if our chain interacts with a chain inside the complex
 					newChain, modelChain = equal_length_chains(chain, next(x for x in unique_chains_list if x.id == chainin))
 					superimpose = Bio.PDB.Superimposer()
-					superimpose.set_atoms(modelChain, newChain)
+					superimpose.set_atoms(newChain, modelChain)
 					chain_copy = chain.copy()
 					chain_copy.id = chain.id
 					superimpose.apply(chain_copy)
@@ -179,10 +198,12 @@ def superimpose(unique_chains_list, verbose=False):
 						
 					else:
 						chain_copy.parent = None
-						print(chain)
 						print(chain_copy)
 						model.add(chain_copy)
 						not_added = False
+						chain_in_model.append(chain.id)
+						print(chain_in_model)
+						n += 1
 
 						if verbose:
 							print("%s sucessfully added to the model" %chain.id)
@@ -192,8 +213,8 @@ def superimpose(unique_chains_list, verbose=False):
 			if verbose and not_added:
 				print("%s could not be added to the model" %chain.id)
 			
-			n += 1
-			chain_in_model.append(chain.id)
+			#n += 1
+			#chain_in_model.append(chain.id)
 	return model
 			
 def save_PDB(model, output_path, verbose=False):
@@ -223,5 +244,5 @@ if __name__ == "__main__":
 	 #int_dic = get_interactions_dict(unique_chain_list)
 
 	#start_chain = start_model(int_dic)
-	model = superimpose(unique_chain_list)
+	model = superimpose(unique_chain_list,files)
 	save_PDB(model, "home/maria/master/Second_term/PytGA_project")
