@@ -19,7 +19,7 @@ def all_chains(PDB_files, verbose=False):
 	for file in PDB_files:
 		for model in parser.get_structure("A",file): #Obtain the structures and iterate on all models
 			chain_num = 0
-			my_set = set()
+			my_list = []
 			for chain in model: #Obtain all chains from the models
 				
 				new_instance = MyChain(chain)
@@ -27,7 +27,7 @@ def all_chains(PDB_files, verbose=False):
 				new_instance.id = letter #Change ID of the sequence
 				id_set.add(letter)
 				chain_num += 1
-				my_set.add(new_instance)
+				my_list.append(new_instance)
 
 				#if unique_chain_list == []:
 				#	unique_chain_list.append(new_instance) #First instance is appended to the list.
@@ -44,7 +44,7 @@ def all_chains(PDB_files, verbose=False):
 			if chain_num != 2:
 				sys.stderr.write("All PDB files must contain two chains.")
 				
-			unique_chain_list.append(my_set)
+			unique_chain_list.append(my_list)
 
 
 	return unique_chain_list
@@ -72,6 +72,28 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 		sys.stderr.write("Obtaining the interactions dictionary.")
 
 	interactions_dict = {}
+	
+	for pair in unique_chain_list:
+		chain1 = pair[0]
+		chain2 = pair[1]
+		if interactions_dict == {}:
+			interaction_dict[chain1.id]= [[chain1, chain2]]
+			interaction_dict[chain2.id]= [[chain2, chain1]]
+		else:
+			for key in interactions_dict.keys():
+				check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
+				if chek1:
+					interactions_dict[key].append([chain1, chain2])
+				check2 = chain2.compare_sequence(interactions_dict[key][0][0])
+				if check2:
+					interactions_dict[key].append([chain2, chain1])
+			
+			if check1 == False:
+				interaction_dict[chain1.id]= [[chain1, chain2]]
+			if check2 == False:
+				interaction_dict[chain2.id]= [[chain2, chain1]]
+
+	"""
 	for chain1 in unique_chain_list:
 
 		interactions_dict[chain1.id] = []
@@ -91,6 +113,7 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 				interactions_dict[chain1.id].append(chain2.id)
 
 	return interactions_dict
+	"""
 
 def start_model(interactions_dict,unique_chains_list,pdbfiles,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
