@@ -5,6 +5,12 @@ from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.Chain import Chain
 from Bio.PDB.PDBIO import PDBIO
 import random
+import gzip
+import re
+from Bio import SeqIO
+import os, glob
+import argparse
+
 
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
@@ -84,17 +90,22 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 			interactions_dict[chain1.id]= [[chain1, chain2]]
 			interactions_dict[chain2.id]= [[chain2, chain1]]
 		else:
+			checking1 = False
+			checking2 = False
 			for key in interactions_dict.keys():
 				check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
 				if check1:
 					interactions_dict[key].append([chain1, chain2])
+					checking1 = True
 				check2 = chain2.compare_sequence(interactions_dict[key][0][0])
 				if check2:
 					interactions_dict[key].append([chain2, chain1])
-			if check1 == False and interactions_dict[chain1.id] == []: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
+					checking2 = True
+			if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
 				interactions_dict[chain1.id]= [[chain1, chain2]]
-			if check2 == False:
+			if checking2 == False:
 				interactions_dict[chain2.id]= [[chain2, chain1]]
+			print(interactions_dict)
 	
 	return interactions_dict
 
@@ -195,7 +206,6 @@ def clashes(chain_atoms, model):
 	
 def superimpose(unique_chains_list,interactions_dict, verbose=False):
 	""" """
-	int_dict = get_interactions_dict(unique_chains_list, verbose)
 	model = start_model(int_dict,verbose)
 	chain1, chain2 = model.get_chains()
 	chain_in_model = [chain1.id,chain2.id]
@@ -258,27 +268,60 @@ def save_PDB(model, output_path, verbose=False):
 	io.save("model.pdb")
 	
 if __name__ == "__main__":
-	pdb = open("1gzx_A_B.pdb")
+	#pdb = open("1gzx_A_B.pdb")
 
-	files=["1gzx_A_B.pdb","1gzx_A_C.pdb","1gzx_A_D.pdb"]
+	#files=["1gzx_A_B.pdb","1gzx_A_C.pdb","1gzx_A_D.pdb"]
 
-	parser = PDBParser(PERMISSIVE=1, QUIET=True)
+	#parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
-	chains = []
+	#chains = []
 
-	struct = parser.get_structure(file="1gzx_A_B.pdb",id="A")
-	for model in struct:
-		for chain in model:
-			ch = MyChain(chain)
-			chains.append(ch)
+	#struct = parser.get_structure(file="1gzx_A_B.pdb",id="A")
+	#for model in struct:
+	#	for chain in model:
+	#		ch = MyChain(chain)
+	#		chains.append(ch)
+	fasp = re.compile('.pdb$|.pdb.gz$')
+	path = "/home/aleix/Documents/MSc_Bioinfo/PYT/examples/5fj8"
+	final_prots_files = []
+	try:
+		if os.path.isdir(path):
+			prots_files = [f for f in os.listdir(path) if fasp.search(f) is not None]
+			os.chdir(path)
+	except:
+		raise OSError('No directory could be read')
 
-	unique_chain_list = all_chains(files)
+	for file in prots_files:
+		if file.endswith('.gz'):
+			with gzip.open(file) as fd:
+				for line in fd:
+					chains = []
+					if line.startswith("ATOM"):
+						pdb = line.split()
+						chain = pdb[4]
+						if chain not in chains:
+							chains.append(chain)
+		else:
+			with open(file) as fd:
+				chains=[]
+				for line in fd:
+					if line.startswith("ATOM"):
+						pdb = line.split()
+						chain = pdb[4]
+						if chain not in chains:
+							chains.append(chain)
+
+		if re.search(r'\w+_%s_%s'%('|'.join(chains),'|'.join(chains)),file) is not None:
+			final_prots_files.append(file)
+		else:
+			raise ValueError('File name %s is not correct'%(file))
+	unique_chain_list = all_chains(final_prots_files)
 	print(unique_chain_list)
 	dict_int = get_interactions_dict(unique_chain_list)
-	print(dict_int)
-	 #int_dic = get_interactions_dict(unique_chain_list)
+	#print(dict_int)
+	
 
-	start_chain = start_model(dict_int)
+	#start_chain = start_model(dict_int)
 	model = superimpose(unique_chain_list,dict_int)
 	print(model)
-	save_PDB(model, "home/maria/master/Second_term/PytGA_project")
+	#save_PDB(model, "home/maria/master/Second_term/PytGA_project")
