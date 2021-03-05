@@ -12,7 +12,7 @@ def all_chains(PDB_files, verbose=False):
 	""" Creating an object for every unique PDB chain. """
 
 	unique_chain_list=[]
-	id_set={}
+	id_set=set()
 	if verbose:
 		print("Processing PDB files and analyzing the chains")
 
@@ -77,21 +77,21 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 		chain1 = pair[0]
 		chain2 = pair[1]
 		if interactions_dict == {}:
-			interaction_dict[chain1.id]= [[chain1, chain2]]
-			interaction_dict[chain2.id]= [[chain2, chain1]]
+			interactions_dict[chain1.id]= [[chain1, chain2]]
+			interactions_dict[chain2.id]= [[chain2, chain1]]
 		else:
 			for key in interactions_dict.keys():
 				check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
-				if chek1:
+				if check1:
 					interactions_dict[key].append([chain1, chain2])
 				check2 = chain2.compare_sequence(interactions_dict[key][0][0])
 				if check2:
 					interactions_dict[key].append([chain2, chain1])
 			
 			if check1 == False:
-				interaction_dict[chain1.id]= [[chain1, chain2]]
+				interactions_dict[chain1.id]= [[chain1, chain2]]
 			if check2 == False:
-				interaction_dict[chain2.id]= [[chain2, chain1]]
+				interactions_dict[chain2.id]= [[chain2, chain1]]
 	
 	return interactions_dict
 
