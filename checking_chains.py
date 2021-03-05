@@ -92,6 +92,8 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 				interaction_dict[chain1.id]= [[chain1, chain2]]
 			if check2 == False:
 				interaction_dict[chain2.id]= [[chain2, chain1]]
+	
+	return interactions_dict
 
 	"""
 	for chain1 in unique_chain_list:
@@ -112,7 +114,6 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 
 				interactions_dict[chain1.id].append(chain2.id)
 
-	return interactions_dict
 	"""
 
 def start_model(interactions_dict,unique_chains_list,pdbfiles,verbose=False):
