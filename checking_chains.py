@@ -12,38 +12,39 @@ def all_chains(PDB_files, verbose=False):
 	""" Creating an object for every unique PDB chain. """
 
 	unique_chain_list=[]
-	id_set={"A"}
+	id_set={}
 	if verbose:
 		print("Processing PDB files and analyzing the chains")
 
 	for file in PDB_files:
 		for model in parser.get_structure("A",file): #Obtain the structures and iterate on all models
 			chain_num = 0
-
+			my_set = set()
 			for chain in model: #Obtain all chains from the models
 				
 				new_instance = MyChain(chain)
+				letter = chain_id(id_set)
+				new_instance.id = letter #Change ID of the sequence
+				id_set.add(letter)
 				chain_num += 1
+				my_set.add(new_instance)
 
-				if unique_chain_list == []:
-					unique_chain_list.append(new_instance) #First instance is appended to the list.
+				#if unique_chain_list == []:
+				#	unique_chain_list.append(new_instance) #First instance is appended to the list.
 
-				else:
-					unique = True
-					for instance in unique_chain_list:
+				#else:
+				#	unique = True
+				#	for instance in unique_chain_list:
 						
-						if instance.compare_sequence(new_instance) == True:
-							unique = False
-							break
+				#		if instance.compare_sequence(new_instance) == True:
+				#			unique = False
+				#			break
 							
-					if unique == True:	#If the sequence is different from all the others of the list, it's appended.
-						letter = chain_id(id_set)
-						new_instance.id = letter
-						id_set.add(letter)
-						unique_chain_list.append(new_instance)
 
 			if chain_num != 2:
 				sys.stderr.write("All PDB files must contain two chains.")
+				
+			unique_chain_list.append(my_set)
 
 
 	return unique_chain_list
