@@ -101,8 +101,10 @@ If the directory doesn't exist, it will be created automatically but if the user
 
 # Biological background
 
+...
 
-
+# Analysis
+...
 
 
 ```{.sh .numberlines startFrom="100"}
