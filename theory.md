@@ -93,6 +93,14 @@ B:2
 
 If the directory doesn't exist, it will be created automatically but if the user introduces an already existing directory, it will raise an error unless he specifies that he want to overwrite the content (using the -force argument).
 
+## Example
+
+
+# Algorithm
+...
+
+# Biological background
+
 
 
 
