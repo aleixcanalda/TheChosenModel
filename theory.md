@@ -91,9 +91,9 @@ B:2
 
 ### Output directory (mandatory argument)
 
-If the directory doesn't exist, it will be created automatically but if the user introduces an already existing directory, it will raise an error unless he specifies that he want to overwrite the content (using the -force argument).
+If the directory doesn't exist, it will be created automatically but if the user introduces an already existing directory, it will raise an error unless he specifies that he wants to overwrite the content (using the -force argument).
 
-## Example
+## Examples
 
 
 # Algorithm
@@ -101,7 +101,15 @@ If the directory doesn't exist, it will be created automatically but if the user
 
 # Biological background
 
-...
+Obtaining the structure of a protein has been done for some years now through experimental procedures such as X-ray crystallography, NMR spectroscopy and electron microscopy. This has enabled to create a Protein Database (PDB) where many protein structures are stored. Thanks to this we can advance in the field of Structural Bioinformatics and obtain for example information on pairs of interacting chains of a macrocomplex which would allow us to create macrocomplex structures, which is exactly what this program is about. Here, we will talk about the biological background that the program needed in order to be developed.
+
+## Macrocomplexes 
+
+When talking about proteins, we know that most don't interact on their own, they form macrocomplexes. The chains usually interact in a way that they keep the hydrophobic residues together and expose the rest of residues to the solvent in order to obtain a more favourable structure. When taking into account this, we know that chains aren't in space on their own, they interact ones with each other in order to form the whole structure. Therefore, by knowing the pairs of interactions among them in space, we can reconstruct the whole stucture. Knowing the structures of these macrocomplexes will further our knowledge of protein-protein interactions (PPIs) and the biochemical functions they partake. 
+
+### Superimposition
+
+We assume that an interaction (A-B) will interact with another pair of interacting chains (for example, A-C) which we will then be able to superimpose (A-A) in order to obtain the structure with the 3 chains as shown in Figure X. 
 
 # Analysis
 ...
