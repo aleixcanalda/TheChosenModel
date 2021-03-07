@@ -97,7 +97,7 @@ If the directory doesn't exist, it will be created automatically but if the user
 
 
 
-```{.sh .numberlines startFrom="100", echo = FALSE}
+```{.sh .numberlines startFrom="100"}
 # 
 pandoc -f $PDOCFLGS                          \
        --template=./template/readme.tex      \
