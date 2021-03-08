@@ -94,11 +94,11 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 			checking2 = False
 			for key in interactions_dict.keys():
 				check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
-				if check1:
+				if check1 == 2:
 					interactions_dict[key].append([chain1, chain2])
 					checking1 = True
 				check2 = chain2.compare_sequence(interactions_dict[key][0][0])
-				if check2:
+				if check2 == 2:
 					interactions_dict[key].append([chain2, chain1])
 					checking2 = True
 			if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
