@@ -109,26 +109,28 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 	
 	return interactions_dict
 
-	"""
-	for chain1 in unique_chain_list:
+def get_stech_dict(unique_chain_list, verbose=False):
+	if verbose:
+		sys.stderr.write("Obtaining the stechiometry dictionary.")
 
-		interactions_dict[chain1.id] = []
+	stech_dict = {}
 	
-		for chain2 in unique_chain_list:
+	for pair in unique_chain_list:
+		chain1 = pair[0]
+		chain2 = pair[1]
 
-			if chain1.id == chain2.id:
-				continue
-
-			interact_1, interact_2 = chain1.interactions(chain2)
-
-			if interact_1 == set() and interact_2 == set():
-				continue
-
+		if chain1.compare_sequence(chain2) == 1:
+			if chain1.id not in stech_dict.keys():
+				stech_dict[chain1.id] = [chain2.id]
 			else:
-
-				interactions_dict[chain1.id].append(chain2.id)
-
-	"""
+				stech_dict[chain1.id].append(chain2.id)
+			
+			if chain2.id not in stech_dict.keys():
+				stech_dict[chain2.id] = [chain1.id]
+			else:
+				stech_dict[chain2.id].append(chain1.id)
+	
+	return stech_dict
 
 def start_model(interactions_dict,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
