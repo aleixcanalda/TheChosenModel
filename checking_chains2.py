@@ -103,26 +103,34 @@ def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
 
 	stech_dict = {}
 	stech_file = {}
-	
-	for pair in unique_chain_list:
-		chain1 = pair[0]
-		chain2 = pair[1]
+	chains_list = []
+	chain_ids = []
 
-		if chain1.compare_sequence(chain2) == 1:
-			if chain1.id not in stech_dict.keys():
-				stech_dict[chain1.id] = [chain1.id,chain2.id]
-			else:
-				stech_dict[chain1.id].append(chain2.id)
-			
-			if chain2.id not in stech_dict.keys():
-				stech_dict[chain2.id] = [chain2.id,chain1.id]
-			else:
-				stech_dict[chain2.id].append(chain1.id)
+	for chain1, chain2 in unique_chain_list:
+		if chain1.compare_sequence(chain2) != 2:
+
+			if chain1.id not in chain_ids:
+				chains_list.append(chain1)
+				chain_ids.append(chain1.id)
+			if chain2.id not in chain_ids:
+				chains_list.append(chain2)
+				chain_ids.append(chain2.id)
+
+
+	for chain1 in chains_list:
+		for chain2 in chains_list:
+			if chain1.compare_sequence(chain2) == 1:
+				if chain1.id not in stech_dict.keys():
+					stech_dict[chain1.id] = [chain1.id,chain2.id]
+				else:
+					stech_dict[chain1.id].append(chain2.id)
+				
+
 	
 	fd = open(stechiometry, "r")
 	for line in fd:
-		line.rstrip()
-		stech_file[line[0]] = line[2:]	
+		line = line.strip()
+		stech_file[line[0]] = line[2:]
 	fd.close()
 	
 	return stech_dict, stech_file
@@ -203,18 +211,20 @@ def clashes(chain_atoms, model):
 	
 def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometry=None):
 	""" """
-	model = start_model(int_dict,verbose)
+	model = start_model(interactions_dict,verbose)
 	chain1, chain2 = model.get_chains()
 	chain_in_model = [chain1.id,chain2.id]
-	print(int_dict)
 	print(chain1)
 	print(chain2)
 	if stechiometry != None:
-		stech_dict, stech_file = get_stech_dict(unique_chains_list, stechiometry)
+		stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
+		print(stech_dict)
+		print(stech_file)
 		problematic_keys = {}
 		for key in stech_file.keys():
-			if len(stech_dict[key]) != stech_file[key]:
+			if len(stech_dict[key][0]) != stech_file[key]:
 				problematic_keys[key] = 0
+				print(key)
 			
 		for key in problematic_keys.keys():
 			if chain1.id in stech_dict[key]:
@@ -222,7 +232,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 				
 			if chain2.id in stech_dict[key]:
 				problematic_keys[key] += 1
-		
+		print(problematic_keys)
 		#stech_model = {}
 		#if chain1.id in stech_file.keys():
 		#	stech_model[chain1.id] = 1
@@ -232,7 +242,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 
 	#random.shuffle(unique_chains_list)
 	n = 2
-	while n<len(int_dict.keys()):
+	while n<len(interactions_dict.keys()):
 		for chain in interactions_dict.keys():
 			if chain in chain_in_model:
 				continue
@@ -240,10 +250,12 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 			if stechiometry != None and problematic_keys != {}:
 				key_check = ""
 				for key in problematic_keys.keys():
-					if chain.id in stech_dict[key]:
+					if chain in stech_dict[key]:
 						key_check = key
 				if problematic_keys[key_check] == stech_file[key_check]: #if the number of chains is equal to the stechiometry, we don't add more chains.
 					n += 1
+					if verbose:
+						print("Not adding chain %S due to stechiometry" %chain)
 					continue
 				
 			not_added = True
@@ -302,7 +314,7 @@ def save_PDB(model, output_path, verbose=False):
 if __name__ == "__main__":
 	#pdb = open("1gzx_A_B.pdb")
 
-	#files=["1gzx_A_B.pdb","1gzx_A_C.pdb","1gzx_A_D.pdb"]
+	files=["1gzx_A_B.pdb","1gzx_A_C.pdb","1gzx_A_D.pdb"]
 
 	#parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
@@ -315,6 +327,7 @@ if __name__ == "__main__":
 	#		chains.append(ch)
 	fasp = re.compile('.pdb$|.pdb.gz$')
 	path = "/home/aleix/Documents/MSc_Bioinfo/PYT/examples/5fj8"
+	"""
 	final_prots_files = []
 	try:
 		if os.path.isdir(path):
@@ -347,13 +360,15 @@ if __name__ == "__main__":
 			final_prots_files.append(file)
 		else:
 			raise ValueError('File name %s is not correct'%(file))
-	unique_chain_list = all_chains(final_prots_files)
+	"""
+
+	unique_chain_list = all_chains(files)
 	print(unique_chain_list)
 	dict_int = get_interactions_dict(unique_chain_list)
 	#print(dict_int)
 	
 
 	#start_chain = start_model(dict_int)
-	model = superimpose(unique_chain_list,dict_int)
+	model = superimpose(unique_chain_list,dict_int,verbose=True, stechiometry = "stech.txt")
 	print(model)
 	#save_PDB(model, "home/maria/master/Second_term/PytGA_project")
