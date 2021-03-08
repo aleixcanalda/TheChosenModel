@@ -141,7 +141,8 @@ def start_model(interactions_dict,verbose=False):
 	model = Model("A") #Create new instance of class Model
 	
 	if verbose:
-		sys.stderr.write("Deciding the starting model.")
+		#sys.stderr.write("Deciding the starting model.")
+		print("Deciding the starting model.")
 
 	most_inter = 0
 
@@ -160,16 +161,6 @@ def start_model(interactions_dict,verbose=False):
 
 	#second_chain = False
 
-	"""
-	for inter in interactions_dict[starting_chain]: #Search for a second chains that interacts with the starting chain.
-		if second_chain == True:
-			break
-		for file in pdbfiles:
-			if inter in str(file) and starting_chain in str(file): #If there is an input file with the interaction of these two chains, we add it to the model
-				model.add(next(x for x in unique_chains_list if x.id == inter))
-				second_chain = True
-				break
-	"""
 	return model
 
 def equal_length_chains(chain1, chain2):
@@ -222,9 +213,11 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 		print(stech_file)
 		problematic_keys = {}
 		for key in stech_file.keys():
-			if len(stech_dict[key][0]) != stech_file[key]:
+
+			if len(stech_dict[key]) > int(stech_file[key]):
 				problematic_keys[key] = 0
-				print(key)
+			elif len(stech_dict[key]) < int(stech_file[key]) and verbose:
+				print("It's not possible to fulfill the stechiometry %s:%s due to an insufficient number of input chains. Only %s chains will be added to the model" %(key, stech_file[key], len(stech_dict[key])))
 			
 		for key in problematic_keys.keys():
 			if chain1.id in stech_dict[key]:
@@ -250,13 +243,17 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 			if stechiometry != None and problematic_keys != {}:
 				key_check = ""
 				for key in problematic_keys.keys():
+
 					if chain in stech_dict[key]:
 						key_check = key
-				if problematic_keys[key_check] == stech_file[key_check]: #if the number of chains is equal to the stechiometry, we don't add more chains.
-					n += 1
-					if verbose:
-						print("Not adding chain %S due to stechiometry" %chain)
-					continue
+						break
+				
+				if key_check != "":
+					if problematic_keys[key_check] == int(stech_file[key_check]): #if the number of chains is equal to the stechiometry, we don't add more chains.
+						n += 1
+						if verbose:
+							print("Not adding chain %s due to stechiometry" %chain)
+						continue
 				
 			not_added = True
 			#shuffle(chain_in_model): if we want to make more models, we should shuffle the chainsin the model so the chains are superimposed to different chains.
