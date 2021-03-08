@@ -49,11 +49,11 @@ class MyChain(Chain):
 		if ident/len(align1) >= 0.95:
 			#if the chains are homolog (have the same chain in stechiometry) but are in a different position in space, we'll still keep them
 			if (self.child_list[0].child_list[0].get_vector()[0],self.child_list[0].child_list[0].get_vector()[1]) == (other_chain.child_list[0].child_list[0].get_vector()[0],self.child_list[0].child_list[0].get_vector()[1]):
-				return True
+				return 2
 			else:
-				return False
+				return 1
 		else: 
-			return False
+			return 0
 
 
 	def interactions(self, other_chain):
