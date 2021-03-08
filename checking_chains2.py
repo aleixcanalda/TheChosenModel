@@ -32,19 +32,7 @@ def all_chains(PDB_files, verbose=False):
 				#new_instance.id = letter #Change ID of the sequence
 				#id_set.add(letter)
 				chain_num += 1
-				my_list.append(new_instance)
-
-				#if unique_chain_list == []:
-				#	unique_chain_list.append(new_instance) #First instance is appended to the list.
-
-				#else:
-				#	unique = True
-				#	for instance in unique_chain_list:
-						
-				#		if instance.compare_sequence(new_instance) == True:
-				#			unique = False
-				#			break
-							
+				my_list.append(new_instance)							
 
 			if chain_num != 2:
 				sys.stderr.write("All PDB files must contain two chains.")
@@ -109,11 +97,12 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 	
 	return interactions_dict
 
-def get_stech_dict(unique_chain_list, verbose=False):
+def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
 	if verbose:
 		sys.stderr.write("Obtaining the stechiometry dictionary.")
 
 	stech_dict = {}
+	stech_file = {}
 	
 	for pair in unique_chain_list:
 		chain1 = pair[0]
@@ -121,16 +110,22 @@ def get_stech_dict(unique_chain_list, verbose=False):
 
 		if chain1.compare_sequence(chain2) == 1:
 			if chain1.id not in stech_dict.keys():
-				stech_dict[chain1.id] = [chain2.id]
+				stech_dict[chain1.id] = [chain1.id,chain2.id]
 			else:
 				stech_dict[chain1.id].append(chain2.id)
 			
 			if chain2.id not in stech_dict.keys():
-				stech_dict[chain2.id] = [chain1.id]
+				stech_dict[chain2.id] = [chain2.id,chain1.id]
 			else:
 				stech_dict[chain2.id].append(chain1.id)
 	
-	return stech_dict
+	fd = open(stechiometry, "r")
+	for line in fd:
+		line.rstrip()
+		stech_file[line[0]] = line[2:]	
+	fd.close()
+	
+	return stech_dict, stech_file
 
 def start_model(interactions_dict,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
@@ -206,7 +201,7 @@ def clashes(chain_atoms, model):
 		return False
 
 	
-def superimpose(unique_chains_list,interactions_dict, verbose=False):
+def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometry=None):
 	""" """
 	model = start_model(int_dict,verbose)
 	chain1, chain2 = model.get_chains()
@@ -214,18 +209,49 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False):
 	print(int_dict)
 	print(chain1)
 	print(chain2)
+	if stechiometry != None:
+		stech_dict, stech_file = get_stech_dict(unique_chains_list, stechiometry)
+		problematic_keys = {}
+		for key in stech_file.keys():
+			if len(stech_dict[key]) != stech_file[key]:
+				problematic_keys[key] = 0
+			
+		for key in problematic_keys.keys():
+			if chain1.id in stech_dict[key]:
+				problematic_keys[key] += 1
+				
+			if chain2.id in stech_dict[key]:
+				problematic_keys[key] += 1
+		
+		#stech_model = {}
+		#if chain1.id in stech_file.keys():
+		#	stech_model[chain1.id] = 1
+		#else:
+		#	stech_model[stech_dict[chain1.id]] = 1
+		
+
 	#random.shuffle(unique_chains_list)
 	n = 2
 	while n<len(int_dict.keys()):
 		for chain in interactions_dict.keys():
 			if chain in chain_in_model:
 				continue
-			print("looking at:%s"%(chain))	
+			print("looking at:%s"%(chain))
+			if stechiometry != None and problematic_keys != {}:
+				key_check = ""
+				for key in problematic_keys.keys():
+					if chain.id in stech_dict[key]:
+						key_check = key
+				if problematic_keys[key_check] == stech_file[key_check]: #if the number of chains is equal to the stechiometry, we don't add more chains.
+					n += 1
+					continue
+				
 			not_added = True
 			#shuffle(chain_in_model): if we want to make more models, we should shuffle the chainsin the model so the chains are superimposed to different chains.
 			for chainin in chain_in_model:
 				
 				for chain_model, chain_interact in interactions_dict[chainin]: #if our chain interacts with a chain inside the complex
+						
 					if chain_interact.id == chain:
 						chaininin = [x for x in model.get_chains() if x.id == chainin]
 						print(chaininin)
@@ -248,6 +274,10 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False):
 							not_added = False
 							chain_in_model.append(chain)
 							print(chain_in_model)
+							if stechiometry != None and problematic_keys != {}:
+								for key in problematic_keys.keys():
+									if chain_copy.id in stech_dict[key]:
+										problematic_keys[key] += 1
 							n += 1
 
 							if verbose:
