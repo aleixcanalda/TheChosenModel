@@ -10,6 +10,8 @@ import re
 from Bio import SeqIO
 import os, glob
 import argparse
+from modeller import *
+from modeller.scripts import complete_pdb
 
 
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
@@ -308,6 +310,21 @@ def save_PDB(model, output_path, verbose=False):
 	io.set_structure(model)
 	io.save("model.pdb")
 	
+
+def DOPE_Energy(model,verbose=False):
+	log.verbose()    # request verbose output
+	env = Environ()
+	#env.libs.topology.read(file='$(LIB)/top_heav.lib') # read topology
+	#env.libs.parameters.read(file='$(LIB)/par.lib') # read parameters
+
+	# read model file
+	mdl = complete_pdb(env, model)
+
+	# Assess with DOPE:
+	s = Selection(mdl)   # all atom selection
+	s.assess_dope(output='ENERGY_PROFILE NO_REPORT', file='model.profile',
+	              normalize_profile=True, smoothing_window=15)
+
 if __name__ == "__main__":
 	#pdb = open("1gzx_A_B.pdb")
 
@@ -366,6 +383,7 @@ if __name__ == "__main__":
 	
 
 	#start_chain = start_model(dict_int)
-	model = superimpose(unique_chain_list,dict_int,verbose=True, stechiometry = "stech.txt")
+	model = superimpose(unique_chain_list,dict_int,verbose=True)
 	print(model)
+	DOPE_Energy(model)
 	#save_PDB(model, "home/maria/master/Second_term/PytGA_project")
