@@ -3,6 +3,7 @@ from classes import *
 #from IOinterface.py import *
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.Chain import Chain
+from Bio.PDB.Model import Model as modelmodel
 from Bio.PDB.PDBIO import PDBIO
 import random
 import gzip
@@ -12,6 +13,7 @@ import os, glob
 import argparse
 from modeller import *
 from modeller.scripts import complete_pdb
+#from modeller.model import Model as modelmodel
 
 
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
@@ -140,7 +142,7 @@ def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
 def start_model(interactions_dict,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
 
-	model = Model("A") #Create new instance of class Model
+	model = modelmodel("A") #Create new instance of class Model
 	
 	if verbose:
 		#sys.stderr.write("Deciding the starting model.")
@@ -318,6 +320,7 @@ def DOPE_Energy(model,verbose=False):
 	#env.libs.parameters.read(file='$(LIB)/par.lib') # read parameters
 
 	# read model file
+	model = Model(model)
 	mdl = complete_pdb(env, model)
 
 	# Assess with DOPE:
