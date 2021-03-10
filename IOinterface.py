@@ -37,6 +37,12 @@ parser.add_argument('-v', '--verbose',
                     default = False,
                     help = "Print the progession of the execution.")
 
+parser.add_argument('-e', '--energy',
+                    dest = "energy",
+                    action = "store_true",
+                    default = False,
+                    help = "Calculate DOPE energy and plot the result.")
+
 
 options = parser.parse_args()
 
