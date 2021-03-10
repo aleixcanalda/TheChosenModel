@@ -75,6 +75,8 @@ These are all the arguments that can be introduced to our program:
   -f, --force           Overwrite the content of the output directory.
 
   -v, --verbose         Print the progession of the execution.
+  
+  -e, --energy          Calculate DOPE energy and plot the result.
 ```
 
 ### Input (mandatory argument)
