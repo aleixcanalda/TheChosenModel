@@ -47,18 +47,6 @@ def all_chains(PDB_files, verbose=False):
 	return unique_chain_list
 							
 
-
-def chain_id(id_set):
-	""" Function to create unique IDs """
-	
-	alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-				'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'BB',
-				'CC', 'DD', 'EE', 'FF', 'GG', 'HH', 'II', 'JJ', 'KK', 'LL', 'MM', 'NN',
-				'OO', 'PP', 'QQ', 'RR', 'SS', 'TT', 'UU', 'VV', 'WW', 'XX', 'YY', 'ZZ']
-	for letter in alphabet:
-		if letter not in id_set:
-			return letter
-
 def get_interactions_dict(unique_chain_list, verbose=False):
 	""" 
 	Obtain the dictionary of interactions among all chains
