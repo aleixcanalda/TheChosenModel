@@ -45,18 +45,6 @@ def all_chains(PDB_files, verbose=False):
 	return unique_chain_list
 							
 
-
-def chain_id(id_set):
-	""" Function to create unique IDs """
-	
-	alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-				'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'BB',
-				'CC', 'DD', 'EE', 'FF', 'GG', 'HH', 'II', 'JJ', 'KK', 'LL', 'MM', 'NN',
-				'OO', 'PP', 'QQ', 'RR', 'SS', 'TT', 'UU', 'VV', 'WW', 'XX', 'YY', 'ZZ']
-	for letter in alphabet:
-		if letter not in id_set:
-			return letter
-
 def get_interactions_dict(unique_chain_list, verbose=False):
 	""" 
 	Obtain the dictionary of interactions among all chains
@@ -228,12 +216,6 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 			if chain2.id in stech_dict[key]:
 				problematic_keys[key] += 1
 		print(problematic_keys)
-		#stech_model = {}
-		#if chain1.id in stech_file.keys():
-		#	stech_model[chain1.id] = 1
-		#else:
-		#	stech_model[stech_dict[chain1.id]] = 1
-		
 
 	#random.shuffle(unique_chains_list)
 	n = 2
@@ -299,8 +281,6 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 			if verbose and not_added:
 				print("%s could not be added to the model" %chain)
 			
-			#n += 1
-			#chain_in_model.append(chain.id)
 	return model
 			
 def save_PDB(model, output_path, verbose=False):
