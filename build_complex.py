@@ -141,6 +141,7 @@ def start_model(interactions_dict,stechiometry=None,verbose=False):
 
 			starting_chain = chain
 			
+	"""
 	if stechiometry != None:
 		if stechiometry[starting_chain][1] == interactions_dict[starting_chain][0][1].id:
 			model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
@@ -154,7 +155,18 @@ def start_model(interactions_dict,stechiometry=None,verbose=False):
 		model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
 
 		model.add(interactions_dict[starting_chain][0][1])
-
+	"""
+	model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
+	
+	if stechiometry != None:
+		for interaction in interactions_dict[starting_chain.id]:
+			if starting_chain.compare_sequence(interaction[1]) == 0:
+				model.add(interaction[1])
+			else:
+				continue
+	else:
+		model.add(interactions_dict[starting_chain][0][1])
+	
 	return model
 
 def equal_length_chains(chain1, chain2):
