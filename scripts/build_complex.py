@@ -84,6 +84,7 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 	return interactions_dict
 
 def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
+	""" Obtain the stechiometry from the input file and from the interacting chains"""
 	if verbose:
 		print("Obtaining the stechiometry dictionary.")
 
