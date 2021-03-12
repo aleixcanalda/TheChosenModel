@@ -105,5 +105,5 @@ def get_output_file(output_path, force):
                 os.mkdir(output_path + "/analysis")
             
         else:
-            sys.stderr.write("The output directory already exists.")
+            sys.stderr.write("The output directory already exists.\n")
             sys.exit()
