@@ -159,9 +159,10 @@ def start_model(interactions_dict,stechiometry=None,verbose=False):
 	model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
 	
 	if stechiometry != None:
-		for interaction in interactions_dict[starting_chain.id]:
-			if starting_chain.compare_sequence(interaction[1]) == 0:
+		for interaction in interactions_dict[starting_chain]:
+			if interactions_dict[starting_chain][0][0].compare_sequence(interaction[1]) == 0:
 				model.add(interaction[1])
+				break
 			else:
 				continue
 	else:
