@@ -104,9 +104,13 @@ If the directory doesn't exist, it will be created automatically but if the user
 
 # Biological background
 
-Obtaining the structure of a protein has been done for some years now through experimental procedures such as X-ray crystallography, NMR spectroscopy and electron microscopy. This has enabled to create a Protein Database (PDB) where many protein structures are stored. Thanks to this we can advance in the field of Structural Bioinformatics and obtain for example information on pairs of interacting chains of a macrocomplex which would allow us to create macrocomplex structures, which is exactly what this program is about. Here, we will talk about the biological background that the program needed in order to be developed. 
+Obtaining the structure of a protein has been done for some years now through experimental procedures such as X-ray crystallography, NMR spectroscopy and electron microscopy. This has enabled to create a Protein Database (PDB) where many protein structures are stored. Thanks to this we can advance in the field of Structural Bioinformatics and obtain for example information on pairs of interacting chains of a macrocomplex which would allow us to create macrocomplex structures, which is exactly what this program is about. These macrocomplex structures are also known as the quaternary structure, where tertiary structures interact with each other to form a larger structure.
 
 It should also be noted that it isn't as easy to obtain the structures for all proteins. For example, transmembrane proteins are harder than soluble proteins, which means that in the PDB there is a certain bias on the different proteins that we can find there. Furthermore, it is also very expensive and time-consuming to obtain PPIs.That is why being able to predict certain interactions with a program like ours can be important to help fill this gap of knowledge.
+
+Examples of interacting forces would be hydrogen bonds, disulfide bonds but also Van der Waals forces or electrostatic forces. Examples of macrocomplexes that present these interactions would be hemoglobin, enhanceosome DNA-Protein interactions, receptors located at the membrane, etc.
+
+Here, we will talk about the biological background that the program needed in order to be developed. 
 
 ## Macrocomplexes 
 
@@ -115,7 +119,8 @@ When talking about proteins, we know that most don't interact on their own, they
 ## Superimposition
 
 We assume that an interaction (A-B) will interact with another pair of interacting chains (for example, A-C) which we will then be able to superimpose (A-A) in order to obtain the structure with the 3 chains as shown in Figure X. 
-![Showing GC content versus sequence length](./superimp.png "Figure X. Process for a superimposition of two interacting pairs of chains.")
+
+![Figure X. Process for a superimposition of two interacting pairs of chains.](./superimp.png "Figure X. Process for a superimposition of two interacting pairs of chains.")
 
 However, when doing a superimposition we have to watch out that the chain that we add does not interfere with the already created model/structure. This would be called a clash and we can see if the added chain presents a clash by seeing if the backbone atoms are in contact with each other at a distance of less than 2 A and if these clashes happen in more than 5% of the structure (Batsanov, 2001).
 
@@ -127,7 +132,7 @@ However, when doing a superimposition we have to watch out that the chain that w
 
 ...
 
-#References
+# References
 
 Narayanan Eswar, C. Ramakrishnan, Deterministic features of side-chain main-chain hydrogen bonds in globular protein structures, Protein Engineering, Design and Selection, Volume 13, Issue 4, April 2000, Pages 227–238.
 
