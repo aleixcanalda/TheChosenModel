@@ -141,21 +141,6 @@ def start_model(interactions_dict,stechiometry=None,verbose=False):
 
 			starting_chain = chain
 			
-	"""
-	if stechiometry != None:
-		if stechiometry[starting_chain][1] == interactions_dict[starting_chain][0][1].id:
-			model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
-
-			model.add(interactions_dict[starting_chain][1][1])
-		else:
-			model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
-
-			model.add(interactions_dict[starting_chain][0][1])
-	else:
-		model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
-
-		model.add(interactions_dict[starting_chain][0][1])
-	"""
 	model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
 	
 	if stechiometry != None:
@@ -221,7 +206,6 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 		print("Chains %s and %s have been selected to form the starting model." %(chain1.id, chain2.id))
 
 	if stechiometry != None:
-		#stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
 		problematic_keys = {}
 		for key in stech_file.keys():
 
