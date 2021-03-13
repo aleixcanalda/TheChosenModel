@@ -113,7 +113,6 @@ def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
 					stech_dict[chain1.id].append(chain2.id)
 				
 
-	
 	fd = open(stechiometry, "r")
 	for line in fd:
 		line = line.strip()
@@ -122,7 +121,7 @@ def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
 	
 	return stech_dict, stech_file
 
-def start_model(interactions_dict,verbose=False):
+def start_model(interactions_dict,stechiometry=None,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
 
 	model = modelmodel("A") #Create new instance of class Model
@@ -141,10 +140,34 @@ def start_model(interactions_dict,verbose=False):
 			most_inter = chain_inter
 
 			starting_chain = chain
+			
+	"""
+	if stechiometry != None:
+		if stechiometry[starting_chain][1] == interactions_dict[starting_chain][0][1].id:
+			model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
+
+			model.add(interactions_dict[starting_chain][1][1])
+		else:
+			model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
+
+			model.add(interactions_dict[starting_chain][0][1])
+	else:
+		model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
+
+		model.add(interactions_dict[starting_chain][0][1])
+	"""
 	model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
-
-	model.add(interactions_dict[starting_chain][0][1])
-
+	
+	if stechiometry != None:
+		for interaction in interactions_dict[starting_chain]:
+			if interactions_dict[starting_chain][0][0].compare_sequence(interaction[1]) == 0:
+				model.add(interaction[1])
+				break
+			else:
+				continue
+	else:
+		model.add(interactions_dict[starting_chain][0][1])
+	
 	return model
 
 def equal_length_chains(chain1, chain2):
@@ -186,7 +209,11 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 	""" Main function that adds all the chains to create the final model."""
 	if verbose:
 		print("Starting to build the model.")
-	model = start_model(interactions_dict,verbose)
+	if stechiometry != None:
+		stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
+		model = start_model(interactions_dict,stech_dict,verbose)
+	else:
+		model = start_model(interactions_dict,verbose)
 	chain1, chain2 = model.get_chains()
 	chain_in_model = [chain1.id,chain2.id]
 
@@ -194,7 +221,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 		print("Chains %s and %s have been selected to form the starting model." %(chain1.id, chain2.id))
 
 	if stechiometry != None:
-		stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
+		#stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
 		problematic_keys = {}
 		for key in stech_file.keys():
 
