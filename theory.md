@@ -100,7 +100,9 @@ If the directory doesn't exist, it will be created automatically but if the user
 
 # Algorithm
 
+Our program obtains at least the input and output in order to work correctly and with that creates a list with all the chains that are interacting, nevertheless, the chains are saved as a new type of class which has the same functions as the PDB chain class, but with some extra ones that will help us out throughout our program. After we have all the chains in a list, we want to know which ones interact among each other and create a dictionary with all the interacting chains. After that, we want to create the starting final model, and we will do so by adding two chains that we know are interacting, from the chain that presents the most interactions. That way, we choose as a starting model a chain that is related to various other chains and will make the process of adding all the chains and searching for interacting chains onto the structure much more efficient. Moreover, by doing so we will avoid choosing a starting chain that doesn't present interactions at all. Once a starting model has been chosen, we loop through all the interactions and see if we can superimpose the rest of chains inside the interaction dictionary with the model in an iterative fashion. 
 
+The program will superimpose two identical subunits (in other words, chains that have at least 95% similarity) and along with them, their respective interacting chain, applying to the former the transformation matrix applied to the identical chains' superimposition. This way, when superimposing a chain, our model checks whether its respective interacting chain presents clashes with the rest of the model, in order to keep the chain or not add it at all. We will end up then with all the chains that interact and don't clash with the previous model as the final model and we'll be ready to check how well the model turns out.
 
 # Biological background
 
