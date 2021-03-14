@@ -30,23 +30,52 @@ def all_chains(PDB_files, verbose=False):
 			my_list = []
 			for chain in model: #Obtain all chains from the models
 				new_instance = MyChain(chain)
+				same_same = False
+
+				if len(model) == 3 and new_instance.get_type() == "dna":
+					chain_num += 1
+					my_list.append(new_instance)
+					continue
+
+				else:
+					for chains in unique_chain_list:
+						for chainss in chains:
+							if new_instance.compare_sequence(chainss) == 2:
+								same_same = True
+								break
+					if same_same == False:
+						new_instance.id=chain_id(id_set)
+						id_set.add(new_instance.id)
 				chain_num += 1
 				my_list.append(new_instance)							
 
-			if chain_num != 2:
-				sys.stderr.write("All PDB files must contain two chains.")
+			if chain_num < 2:
+				sys.stderr.write("All PDB files must contain at least two chains.")
 				
 			unique_chain_list.append(my_list)
 
 
 	return unique_chain_list
-							
+		
+def chain_id(id_set):
+	""" Function to create unique IDs """
+	
+	alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+				'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'BB',
+				'CC', 'DD', 'EE', 'FF', 'GG', 'HH', 'II', 'JJ', 'KK', 'LL', 'MM', 'NN',
+				'OO', 'PP', 'QQ', 'RR', 'SS', 'TT', 'UU', 'VV', 'WW', 'XX', 'YY', 'ZZ']
+	for letter in alphabet:
+		if letter not in id_set:
+			return letter					
 
 def get_interactions_dict(unique_chain_list, verbose=False):
 	""" 
 	Obtain the dictionary of interactions among all chains
 	The dictionary will look as follows:
 	'Chain1.id' = [[Chain1, Chain2 that interacts with chain 1],[Chain1,Chain3],...] 
+	.
+	.
+	.
 	"""
 	if verbose:
 		print("Obtaining the interactions dictionary.")
@@ -54,32 +83,78 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 	interactions_dict = {}
 	
 	for pair in unique_chain_list:
-		chain1 = pair[0]
-		chain2 = pair[1]
 		
-		interact_1, interact_2 = chain1.interactions(chain2)
-		if interact_1 == set() and interact_2 == set():
-			continue
+		if len(pair) == 3:
 
-		if interactions_dict == {}:
-			interactions_dict[chain1.id]= [[chain1, chain2]]
-			interactions_dict[chain2.id]= [[chain2, chain1]]
+			chain1 = pair[0]
+			chain2 = pair[1]
+			chain3 = pair[2]
+			
+			interact_1, interact_2 = chain1.interactions(chain2)
+			if interact_1 == set() and interact_2 == set():
+				continue
+
+			if interactions_dict == {}:
+				interactions_dict[chain1.id]= [[chain1, chain2],[chain1,chain3]]
+				interactions_dict[chain2.id]= [[chain2, chain1],[chain2,chain3]]
+				interactions_dict[chain3.id]= [[chain3, chain1],[chain3,chain2]]
+
+			else:
+
+				checking1 = False
+				checking2 = False
+				checking3 = False
+				for key in interactions_dict.keys():
+					check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
+					if check1 == 2 or chain1.id == key:
+						interactions_dict[key].append([chain1, chain2])
+						interactions_dict[key].append([chain1, chain3])
+						checking1 = True
+					check2 = chain2.compare_sequence(interactions_dict[key][0][0])
+					if check2 == 2 or chain2.id == key:
+						interactions_dict[key].append([chain2, chain1])
+						interactions_dict[key].append([chain2, chain3])
+						checking2 = True
+					check3 = chain3.compare_sequence(interactions_dict[key][0][0])
+					if check3 == 2 or chain3.id == key:
+						interactions_dict[key].append([chain3, chain1])
+						interactions_dict[key].append([chain3, chain2])
+						checking3 = True
+				if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
+					interactions_dict[chain1.id]= [[chain1, chain2],[chain1,chain3]]
+				if checking2 == False:
+					interactions_dict[chain2.id]= [[chain2, chain1],[chain2,chain3]]
+				if checking3 == False:
+					interactions_dict[chain3.id]= [[chain3, chain1],[chain3,chain2]]
+
+
 		else:
-			checking1 = False
-			checking2 = False
-			for key in interactions_dict.keys():
-				check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
-				if check1 == 2:
-					interactions_dict[key].append([chain1, chain2])
-					checking1 = True
-				check2 = chain2.compare_sequence(interactions_dict[key][0][0])
-				if check2 == 2:
-					interactions_dict[key].append([chain2, chain1])
-					checking2 = True
-			if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
+			chain1 = pair[0]
+			chain2 = pair[1]
+			
+			interact_1, interact_2 = chain1.interactions(chain2)
+			if interact_1 == set() and interact_2 == set():
+				continue
+
+			if interactions_dict == {}:
 				interactions_dict[chain1.id]= [[chain1, chain2]]
-			if checking2 == False:
 				interactions_dict[chain2.id]= [[chain2, chain1]]
+			else:
+				checking1 = False
+				checking2 = False
+				for key in interactions_dict.keys():
+					check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
+					if check1 == 2:
+						interactions_dict[key].append([chain1, chain2])
+						checking1 = True
+					check2 = chain2.compare_sequence(interactions_dict[key][0][0])
+					if check2 == 2:
+						interactions_dict[key].append([chain2, chain1])
+						checking2 = True
+				if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
+					interactions_dict[chain1.id]= [[chain1, chain2]]
+				if checking2 == False:
+					interactions_dict[chain2.id]= [[chain2, chain1]]
 	
 	return interactions_dict
 
@@ -201,11 +276,13 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 		model = start_model(interactions_dict,verbose)
 	chain1, chain2 = model.get_chains()
 	chain_in_model = [chain1.id,chain2.id]
-
+	print(chain1)
+	print(chain2)
 	if verbose:
 		print("Chains %s and %s have been selected to form the starting model." %(chain1.id, chain2.id))
 
 	if stechiometry != None:
+		#stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
 		problematic_keys = {}
 		for key in stech_file.keys():
 
@@ -224,6 +301,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 	n = 2
 	while n<len(interactions_dict.keys()):
 		for chain in interactions_dict.keys():
+			print(chain)
 			if chain in chain_in_model:
 				continue
 
@@ -245,9 +323,10 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 			not_added = True
 			
 			for chainin in chain_in_model:
-				
+				if chain in chain_in_model:
+					break			
 				for chain_model, chain_interact in interactions_dict[chainin]: #if our chain interacts with a chain inside the complex
-						
+					
 					if chain_interact.id == chain:
 						chaininin = [x for x in model.get_chains() if x.id == chainin]
 						newChain, modelChain = equal_length_chains(chain_model, chaininin[0])
@@ -258,11 +337,13 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 						chain_copy.id = chain
 						superimpose.apply(chain_copy) #Apply the superposition matrix
 						chain_atoms = sorted(chain_copy.get_atoms())
-					
+						print(chain_model.id)
+						print(chaininin[0].id)
 						if clashes(chain_atoms, model) == True:
 							continue
 						
 						else:
+							print(chain_in_model)
 							chain_copy.parent = None
 							model.add(chain_copy)
 							not_added = False
@@ -273,7 +354,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 									if chain_copy.id in stech_dict[key]:
 										problematic_keys[key] += 1
 							n += 1
-
+							print(chain_copy)
 							if verbose:
 								print("Chain %s sucessfully added to the model" %chain)
 
@@ -281,6 +362,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 						
 			if verbose and not_added:
 				print("%s could not be added to the model" %chain)
+				n +=1
 			
 	return model
 			
