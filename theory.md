@@ -99,46 +99,23 @@ If the directory doesn't exist, it will be created automatically but if the user
 
 
 # Algorithm
-
-Our program obtains at least the input and output in order to work correctly and with that creates a list with all the chains that are interacting, nevertheless, the chains are saved as a new type of class which has the same functions as the PDB chain class, but with some extra ones that will help us out throughout our program. After we have all the chains in a list, we want to know which ones interact among each other and create a dictionary with all the interacting chains. After that, we want to create the starting final model, and we will do so by adding two chains that we know are interacting, from the chain that presents the most interactions. That way, we choose as a starting model a chain that is related to various other chains and will make the process of adding all the chains and searching for interacting chains onto the structure much more efficient. Moreover, by doing so we will avoid choosing a starting chain that doesn't present interactions at all. Once a starting model has been chosen, we loop through all the interactions and see if we can superimpose the rest of chains inside the interaction dictionary with the model in an iterative fashion. 
-
-The program will superimpose two identical subunits (in other words, chains that have at least 95% similarity) and along with them, their respective interacting chain, applying to the former the transformation matrix applied to the identical chains' superimposition. This way, when superimposing a chain, our model checks whether its respective interacting chain presents clashes with the rest of the model, in order to keep the chain or not add it at all. We will end up then with all the chains that interact and don't clash with the previous model as the final model and we'll be ready to check how well the model turns out.
+...
 
 # Biological background
 
-Obtaining the structure of a protein has been done for some years now through experimental procedures such as X-ray crystallography, NMR spectroscopy and electron microscopy. This has enabled to create a Protein Database (PDB) where many protein structures are stored. Thanks to this we can advance in the field of Structural Bioinformatics and obtain for example information on pairs of interacting chains of a macrocomplex which would allow us to create macrocomplex structures, which is exactly what this program is about. These macrocomplex structures are also known as the quaternary structure, where tertiary structures interact with each other to form a larger structure.
-
-It should also be noted that it isn't as easy to obtain the structures for all proteins. For example, transmembrane proteins are harder than soluble proteins, which means that in the PDB there is a certain bias on the different proteins that we can find there. Furthermore, it is also very expensive and time-consuming to obtain PPIs.That is why being able to predict certain interactions with a program like ours can be important to help fill this gap of knowledge.
-
-Examples of interacting forces would be hydrogen bonds, disulfide bonds but also Van der Waals forces or electrostatic forces. Examples of macrocomplexes that present these interactions would be hemoglobin, enhanceosome DNA-Protein interactions, receptors located at the membrane, etc.
-
-Here, we will talk about the biological background that the program needed in order to be developed. 
+Obtaining the structure of a protein has been done for some years now through experimental procedures such as X-ray crystallography, NMR spectroscopy and electron microscopy. This has enabled to create a Protein Database (PDB) where many protein structures are stored. Thanks to this we can advance in the field of Structural Bioinformatics and obtain for example information on pairs of interacting chains of a macrocomplex which would allow us to create macrocomplex structures, which is exactly what this program is about. Here, we will talk about the biological background that the program needed in order to be developed.
 
 ## Macrocomplexes 
 
-When talking about proteins, we know that most don't interact on their own, they form macrocomplexes. The chains usually interact in a way that they keep the hydrophobic residues together and expose the rest of residues to the solvent in order to obtain a more favourable structure. When taking this into account, we know that chains aren't in space on their own, they interact with each other in order to form the whole structure. For this reason, in our program we determined whether two chains were interacting or not, without taking into account if they had a joint pdb file, in order to detect all interacting chains for the whole complex, without the need to have many pdb files. We determined that two chains were interacting if they formed hydrogen bonds, which would mean that their atoms are at a length of 3.5 A or less (Narayan et al., 2000).Therefore, by knowing the pairs of interactions among them in space, we can reconstruct the whole stucture. Knowing the structures of these macrocomplexes will further our knowledge of protein-protein interactions (PPIs) and the biochemical functions they partake. 
+When talking about proteins, we know that most don't interact on their own, they form macrocomplexes. The chains usually interact in a way that they keep the hydrophobic residues together and expose the rest of residues to the solvent in order to obtain a more favourable structure. When taking into account this, we know that chains aren't in space on their own, they interact ones with each other in order to form the whole structure. Therefore, by knowing the pairs of interactions among them in space, we can reconstruct the whole stucture. Knowing the structures of these macrocomplexes will further our knowledge of protein-protein interactions (PPIs) and the biochemical functions they partake. 
 
-## Superimposition
+### Superimposition
 
 We assume that an interaction (A-B) will interact with another pair of interacting chains (for example, A-C) which we will then be able to superimpose (A-A) in order to obtain the structure with the 3 chains as shown in Figure X. 
 
-![Figure X. Process for a superimposition of two interacting pairs of chains.](./superimp.png "Figure X. Process for a superimposition of two interacting pairs of chains.")
-
-However, when doing a superimposition we have to watch out that the chain that we add does not interfere with the already created model/structure. This would be called a clash and we can see if the added chain presents a clash by seeing if the backbone atoms are in contact with each other at a distance of less than 2 A and if these clashes happen in more than 5% of the structure (Batsanov, 2001).
-
-## Strengths
-
-## Weaknesses
-
 # Analysis
-
 ...
 
-# References
-
-Narayanan Eswar, C. Ramakrishnan, Deterministic features of side-chain main-chain hydrogen bonds in globular protein structures, Protein Engineering, Design and Selection, Volume 13, Issue 4, April 2000, Pages 227–238.
-
-Batsanov S.S.; Van der Waals Raddi of Elements, Inorganic Materials, 2001.
 
 ```{.sh .numberlines startFrom="100"}
 # 
