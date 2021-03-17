@@ -174,12 +174,12 @@ def parse_stech(unique_chain_list, stechiometry, nomen,verbose=False):
 	for keys in nomen.keys():
 		for value in nomen[keys]:
 			if nomen_stech == {}:
-				nomen_stech[keys] = [value]
+				nomen_stech[keys] = [value.id]
 			else:
 				if keys not in nomen_stech.keys():
-					nomen_stech[keys] = [value]
-				elif value not in nomen_stech[keys]:
-					nomen_stech[keys].append(value)
+					nomen_stech[keys] = [value.id]
+				elif value.id not in nomen_stech[keys]:
+					nomen_stech[keys].append(value.id)
 	print(nomen_stech)
 	if verbose:
 		print("Obtaining the stechiometry dictionary.")	
