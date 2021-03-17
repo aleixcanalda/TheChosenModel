@@ -54,9 +54,9 @@ def get_input_file(input_path):
     path = input_path
     final_prots_files = []
     try:
-        if os.path.isdir(path):
-            prots_files = [f for f in os.listdir(path) if fasp.search(f) is not None]
-            os.chdir(path)
+        prots_files = [f for f in os.listdir(path) if fasp.search(f) is not None]
+        os.chdir(path)
+
     except:
         raise OSError('No directory could be read')
 
@@ -80,7 +80,7 @@ def get_input_file(input_path):
                         if chain not in chains:
                             chains.append(chain)
 
-        if re.search(r'\w+_%s_%s'%('|'.join(chains),'|'.join(chains)),file) is not None:
+        if re.search(r'\w+[._]\w+.\w+_%s_\w+'%('|'.join(chains))file) is not None:
             final_prots_files.append(file)
         else:
             raise ValueError('File name %s is not correct'%(file))
@@ -91,7 +91,7 @@ def get_output_file(output_path, force):
     """ Handling with different kind of input: only fasta or gunzip fasta files 
     for a given path or for the current directory """
     
-    if os.path.is_dir(output_path) == False:
+    if os.path.isdir(output_path) == False:
         os.mkdir(output_path)
         os.mkdir(output_path + "/structures")
         os.mkdir(output_path + "/analysis")
@@ -99,23 +99,11 @@ def get_output_file(output_path, force):
         if force == True:
             out1 = output_path + "/structures"
             out2 = output_path + "/analysis"
-            if os.path.is_dir() == False:
+            if os.path.isdir(out1) == False:
                 os.mkdir(output_path + "/structures")
-            if os.path.is_dir() == False:
+            if os.path.isdir(out2) == False:
                 os.mkdir(output_path + "/analysis")
             
         else:
-            print("The output directory already exists.")
+            sys.stderr.write("The output directory already exists.\n")
             sys.exit()
-
-if __name__ == "__main__":
-
-    prots_files = get_input_file(options.infile)
-    get_output_file(options.outfile,options.force)
-
-    path_stech = options.stechiometry
-    if path_stech is not None:
-        with open(path_stech) as fd:
-            stech = [f for f in fd if re.search(r'\w:\w',f)]
-
-    verbose = options.verbose
