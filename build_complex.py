@@ -1,6 +1,5 @@
 import sys
 from classes import *
-#from IOinterface.py import *
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.Chain import Chain
 from Bio.PDB.Model import Model as modelmodel
@@ -11,12 +10,10 @@ import re
 from Bio import SeqIO
 import os, glob
 import argparse
-#from modeller.model import Model as modelmodel
-
 
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
-def all_chains(PDB_files, verbose=False):
+def all_chains(PDB_files,verbose=False):
 	""" Creating an object for every unique PDB chain. """
 
 	unique_chain_list=[]
@@ -26,25 +23,26 @@ def all_chains(PDB_files, verbose=False):
 		print("Processing PDB files and analyzing the chains")
 
 	for file in PDB_files:
-		print(file)
 		for model in parser.get_structure("A",file): #Obtain the structures and iterate on all models
 			chain_num = 0
 			my_list = []
 			for chain in model: #Obtain all chains from the models
 				new_instance = MyChain(chain)
 				same_same = False
+				if nomen == {}:
+					nomen[file[:6]] = [new_instance]
 
-				if chain_num == 0:
-					if nomen[file[:5]] not in nomen.keys():
-						nomen[file[:5]] = [chain.id]
-					elif chain.id not in nomen[file[:5]].values():
-						nomen[file[:5]].append(chain.id)
+				elif chain_num == 0:
+					if file[:6] not in nomen.keys():
+						nomen[file[:6]] = [new_instance]
+					else:
+						nomen[file[:6]].append(new_instance)
 				
 				elif chain_num == 1 and len(model) == 2: #If it's the second chain and it's a protein pair.
-					if nomen[file[7:13]] not in nomen.keys():
-						nomen[file[7:13]] = [chain.id]
-					elif chain.id not in nomen[file[7:13]].values():
-						nomen[file[7:13]].append(chain.id)
+					if file[7:13] not in nomen.keys():
+						nomen[file[7:13]] = [new_instance]
+					else:
+						nomen[file[7:13]].append(new_instance)
 
 				if len(model) == 3 and new_instance.get_type() == "dna":
 					chain_num += 1
@@ -58,7 +56,6 @@ def all_chains(PDB_files, verbose=False):
 								same_same = True
 								break
 					if same_same == False:
-						new_instance.id=chain_id(id_set)
 						id_set.add(new_instance.id)
 				chain_num += 1
 				my_list.append(new_instance)							
@@ -67,9 +64,8 @@ def all_chains(PDB_files, verbose=False):
 				sys.stderr.write("All PDB files must contain at least two chains.")
 				
 			unique_chain_list.append(my_list)
-	print(nomen)
 
-	return unique_chain_list
+	return unique_chain_list, nomen
 		
 def chain_id(id_set):
 	""" Function to create unique IDs """
@@ -145,11 +141,11 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 		else:
 			chain1 = pair[0]
 			chain2 = pair[1]
-			
-			interact_1, interact_2 = chain1.interactions(chain2)
-			if interact_1 == set() and interact_2 == set():
-				continue
 
+			#interact_1, interact_2 = chain1.interactions(chain2)
+			#if interact_1 == set() and interact_2 == set():
+			#	continue
+			
 			if interactions_dict == {}:
 				interactions_dict[chain1.id]= [[chain1, chain2]]
 				interactions_dict[chain2.id]= [[chain2, chain1]]
@@ -172,45 +168,30 @@ def get_interactions_dict(unique_chain_list, verbose=False):
 	
 	return interactions_dict
 
-def get_stech_dicts(unique_chain_list, stechiometry, verbose=False):
+def parse_stech(unique_chain_list, stechiometry, nomen,verbose=False):
 	""" Obtain the stechiometry from the input file and from the interacting chains"""
+	nomen_stech={}
+	for keys in nomen.keys():
+		for value in nomen[keys]:
+			if nomen_stech == {}:
+				nomen_stech[keys] = [value]
+			else:
+				if keys not in nomen_stech.keys():
+					nomen_stech[keys] = [value]
+				elif value not in nomen_stech[keys]:
+					nomen_stech[keys].append(value)
+	print(nomen_stech)
 	if verbose:
-		print("Obtaining the stechiometry dictionary.")
-
-	stech_dict = {}
-	stech_file = {}
-	chains_list = []
-	chain_ids = []
-
-	for chain1, chain2 in unique_chain_list:
-		if chain1.compare_sequence(chain2) != 2:
-
-			if chain1.id not in chain_ids:
-				chains_list.append(chain1)
-				chain_ids.append(chain1.id)
-			if chain2.id not in chain_ids:
-				chains_list.append(chain2)
-				chain_ids.append(chain2.id)
-
-
-	for chain1 in chains_list:
-		for chain2 in chains_list:
-			if chain1.compare_sequence(chain2) == 1:
-				if chain1.id not in stech_dict.keys():
-					stech_dict[chain1.id] = [chain1.id,chain2.id]
-				else:
-					stech_dict[chain1.id].append(chain2.id)
-				
-
+		print("Obtaining the stechiometry dictionary.")	
+	stech_file={}
 	fd = open(stechiometry, "r")
 	for line in fd:
 		line = line.strip()
-		stech_file[line[0]] = line[2:]
+		stech_file[line[:6]] = line[7:]
 	fd.close()
-	
-	return stech_dict, stech_file
+	return stech_file, nomen_stech
 
-def start_model(interactions_dict,stechiometry=None,verbose=False):
+def start_model(interactions_dict,verbose=False):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
 
 	model = modelmodel("A") #Create new instance of class Model
@@ -232,15 +213,7 @@ def start_model(interactions_dict,stechiometry=None,verbose=False):
 			
 	model.add(interactions_dict[starting_chain][0][0]) #We add the chain with most interactions to the model.
 	
-	if stechiometry != None:
-		for interaction in interactions_dict[starting_chain]:
-			if interactions_dict[starting_chain][0][0].compare_sequence(interaction[1]) == 0:
-				model.add(interaction[1])
-				break
-			else:
-				continue
-	else:
-		model.add(interactions_dict[starting_chain][0][1])
+	model.add(interactions_dict[starting_chain][0][1])
 	
 	return model
 
@@ -279,13 +252,13 @@ def clashes(chain_atoms, model):
 		return False
 
 	
-def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometry=None):
+def superimpose(unique_chains_list,interactions_dict, nomen,verbose=False, stechiometry=None):
 	""" Main function that adds all the chains to create the final model."""
 	if verbose:
 		print("Starting to build the model.")
 	if stechiometry != None:
-		stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
-		model = start_model(interactions_dict,stech_dict,verbose)
+		stech_file, nomen_stech = parse_stech(unique_chains_list, stechiometry, nomen)
+		model = start_model(interactions_dict,verbose)
 	else:
 		model = start_model(interactions_dict,verbose)
 	chain1, chain2 = model.get_chains()
@@ -296,26 +269,25 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 		print("Chains %s and %s have been selected to form the starting model." %(chain1.id, chain2.id))
 
 	if stechiometry != None:
-		#stech_dict, stech_file = get_stech_dicts(unique_chains_list, stechiometry)
+		#nomen, stech_file = get_nomen(unique_chains_list, stechiometry)
 		problematic_keys = {}
 		for key in stech_file.keys():
 
-			if len(stech_dict[key]) > int(stech_file[key]):
+			if len(nomen_stech[key]) > int(stech_file[key]):
 				problematic_keys[key] = 0
-			elif len(stech_dict[key]) < int(stech_file[key]) and verbose:
-				print("It's not possible to fulfill the stechiometry %s:%s due to an insufficient number of input chains. Only %s chains will be added to the model" %(key, stech_file[key], len(stech_dict[key])))
+			elif len(nomen_stech[key]) < int(stech_file[key]) and verbose:
+				print("It's not possible to fulfill the stechiometry %s:%s due to an insufficient number of input chains. Only %s chains will be added to the model" %(key, stech_file[key], len(nomen[key])))
 			
 		for key in problematic_keys.keys():
-			if chain1.id in stech_dict[key]:
+			if chain1.id in nomen_stech[key]:
 				problematic_keys[key] += 1
 				
-			if chain2.id in stech_dict[key]:
+			if chain2.id in nomen_stech[key]:
 				problematic_keys[key] += 1
 
 	n = 2
 	while n<len(interactions_dict.keys()):
 		for chain in interactions_dict.keys():
-			print(chain)
 			if chain in chain_in_model:
 				continue
 
@@ -323,7 +295,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 				key_check = ""
 				for key in problematic_keys.keys():
 
-					if chain in stech_dict[key]:
+					if chain in nomen_stech[key]:
 						key_check = key
 						break
 				
@@ -351,8 +323,6 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 						chain_copy.id = chain
 						superimpose.apply(chain_copy) #Apply the superposition matrix
 						chain_atoms = sorted(chain_copy.get_atoms())
-						print(chain_model.id)
-						print(chaininin[0].id)
 						if clashes(chain_atoms, model) == True:
 							continue
 						
@@ -365,7 +335,7 @@ def superimpose(unique_chains_list,interactions_dict, verbose=False, stechiometr
 
 							if stechiometry != None and problematic_keys != {}:
 								for key in problematic_keys.keys():
-									if chain_copy.id in stech_dict[key]:
+									if chain_copy.id in nomen[key]:
 										problematic_keys[key] += 1
 							n += 1
 							print(chain_copy)
