@@ -159,8 +159,8 @@ With our examples, we decided to analyze the models both ways:
   ![Figure X. Energy profile of the 5nss model.](./images/DOPE_energy_5fj8.png "Figure X. Energy profile of 6gmh model.")
   ![Figure Y. Chimera superimposition of the 5nss model with full structure.](./images/5fj8superimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
 * **5fj8**. This macrocomplex is the yeast RNA polymerase III elongation complex. The global stechiometry is a Hetero 17-mer, containing 17 unique protein chains and 3 unique nucleic acid chains, one RNA and DNA molecules. The RSMD between the model and the complex is also 0.000 between 1422 pruned atoms pairs and the DOPE score -497916.468750, with the profile shown below in Figure Y.
-  ![Figure X. Energy profile of the 5fj8 model.](./images/DOPE_energy_5fj8.png "Figure X. Energy profile of 6gmh model.")
-  ![Figure Y. Chimera superimposition of the 5fj8 model with full structure.](./images/5fj8superimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
+  ![Figure X. Energy profile of the 5fj8 model.](./images/DOPE_energy_5nss.png "Figure X. Energy profile of 6gmh model.")
+  ![Figure Y. Chimera superimposition of the 5fj8 model with full structure.](./images/5nsssuperimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
 
 
 # References
