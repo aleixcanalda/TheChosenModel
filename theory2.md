@@ -161,7 +161,7 @@ With our examples, we decided to analyze the models both ways:
 
 
 
-\end{itemize}
+
 
 # References
 
