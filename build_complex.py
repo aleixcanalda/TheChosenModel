@@ -21,16 +21,30 @@ def all_chains(PDB_files, verbose=False):
 
 	unique_chain_list=[]
 	id_set=set()
+	nomen = {}
 	if verbose:
 		print("Processing PDB files and analyzing the chains")
 
 	for file in PDB_files:
+		print(file)
 		for model in parser.get_structure("A",file): #Obtain the structures and iterate on all models
 			chain_num = 0
 			my_list = []
 			for chain in model: #Obtain all chains from the models
 				new_instance = MyChain(chain)
 				same_same = False
+
+				if chain_num == 0:
+					if nomen[file[:5]] not in nomen.keys():
+						nomen[file[:5]] = [chain.id]
+					elif chain.id not in nomen[file[:5]].values():
+						nomen[file[:5]].append(chain.id)
+				
+				elif chain_num == 1 and len(model) == 2: #If it's the second chain and it's a protein pair.
+					if nomen[file[7:13]] not in nomen.keys():
+						nomen[file[7:13]] = [chain.id]
+					elif chain.id not in nomen[file[7:13]].values():
+						nomen[file[7:13]].append(chain.id)
 
 				if len(model) == 3 and new_instance.get_type() == "dna":
 					chain_num += 1
@@ -53,7 +67,7 @@ def all_chains(PDB_files, verbose=False):
 				sys.stderr.write("All PDB files must contain at least two chains.")
 				
 			unique_chain_list.append(my_list)
-
+	print(nomen)
 
 	return unique_chain_list
 		
