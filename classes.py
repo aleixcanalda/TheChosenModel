@@ -20,13 +20,24 @@ class MyChain(Chain):
 		self.xtra = chain.xtra
 		self.level = chain.level # The other attibutes are needed for biopython to be able to work.
 
+	def get_type(self):
+		first_res = self.child_list[0].resname.strip()  # Get the first residue name to see what kind of sequence it is
+		if first_res in self.protein: #if the first residue is in the protein dictionary, we have a protein sequence
+			return "protein"
+		
+		elif first_res in self.dna: #if the first residue is in the dna dictionary, we have a dna sequence
+			return "dna"
+
+		else:
+			return "rna"
+
 	def get_sequence_chain(self):
 		first_res = self.child_list[0].resname.strip()  # Get the first residue name to see what kind of sequence it is
 		seq=""
 		if first_res in self.protein: #if the first residue is in the protein dictionary, we have a protein sequence
-			ppb=PPBuilder()
-			for pp in ppb.build_peptides(self):
-				seq = pp.get_sequence()
+			for res in self:
+				if res.id[0] == " ": #to avoid getting the HETATOM
+					seq += self.protein[res.resname.strip()]
 		
 		elif first_res in self.dna: #if the first residue is in the dna dictionary, we have a dna sequence
 			for res in self:
@@ -64,29 +75,10 @@ class MyChain(Chain):
 		Nsearch = Bio.PDB.NeighborSearch(atom_list) #Creates an instance of NeighborSearch with the atoms of one chain as query
 		
 		for atom in other_chain.get_atoms():
-			interaction = Nsearch.search(atom.coord, 3.5) #For all atoms of the other chain, assess if they're close to the other chain
+			interaction = Nsearch.search(atom.coord, 4) #For all atoms of the other chain, assess if they're close to the other chain
 			if interaction != []:
 				atoms_other.add(atom)
 				atoms_self.update(interaction)
 
 		return (atoms_self, atoms_other)
 
-
-
-if __name__ == "__main__":
-	pdb = open("1gzx_A_B.pdb")
-
-	parser = PDBParser(PERMISSIVE=1, QUIET=True)
-
-	chains = []
-
-	struct = parser.get_structure(file="1gzx_A_B.pdb",id="A")
-	for model in struct:
-		for chain in model:
-			ch = MyChain(chain)
-			chains.append(ch)
-			print(ch.compare_sequence("AGTGCTGATGCTGTGCTAGTCGTA"))
-
-	result=[]
-	result1, result2 = chains[0].interactions(chains[1])
-	print(result1)
