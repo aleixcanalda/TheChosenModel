@@ -43,12 +43,18 @@ parser.add_argument('-e', '--energy',
                     default = False,
                     help = "Calculate DOPE energy and plot the result.")
 
+parser.add_argument('-t', '--template-DNA',
+                    dest = "template",
+                    action = "store",
+                    default = None,
+                    help = "DNA template.")
+
 
 options = parser.parse_args()
 
 
 def get_input_file(input_path):
-    """ Handling with different kind of input: only fasta or gunzip fasta files 
+    """ Handling with different kind of input: only fasta or gunzip fasta files
     for a given path or for the current directory """
     fasp = re.compile('.pdb$|.pdb.gz$')
     path = input_path
@@ -80,7 +86,7 @@ def get_input_file(input_path):
                         if chain not in chains:
                             chains.append(chain)
 
-        if re.search(r'\w+[._]\w+.\w+_%s_\w+'%('|'.join(chains))file) is not None:
+        if re.search(r'\w+[._]\w+.\w+_%s_\w+'%('|'.join(chains)),file) is not None:
             final_prots_files.append(file)
         else:
             raise ValueError('File name %s is not correct'%(file))
@@ -88,9 +94,9 @@ def get_input_file(input_path):
     return final_prots_files
 
 def get_output_file(output_path, force):
-    """ Handling with different kind of input: only fasta or gunzip fasta files 
+    """ Handling with different kind of input: only fasta or gunzip fasta files
     for a given path or for the current directory """
-    
+
     if os.path.isdir(output_path) == False:
         os.mkdir(output_path)
         os.mkdir(output_path + "/structures")
@@ -103,7 +109,7 @@ def get_output_file(output_path, force):
                 os.mkdir(output_path + "/structures")
             if os.path.isdir(out2) == False:
                 os.mkdir(output_path + "/analysis")
-            
+
         else:
             sys.stderr.write("The output directory already exists.\n")
             sys.exit()
