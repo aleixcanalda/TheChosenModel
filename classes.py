@@ -65,6 +65,18 @@ class MyChain(Chain):
 				return 1
 		else: 
 			return 0
+	
+	def compare_dna(self,other_chain, template_chain):
+		""" Compares a template DNA with a fragment DNA and gives out the score and the specific position """
+		chain_seq = self.get_sequence_chain()
+		other_chain_seq = other_chain.get_sequence_chain()
+		template_chain_seq = template_chain.get_sequence_chain()
+		alignments = pairwise2.align.localms(chain_seq,other_chain_seq, 10, -10, -7, -5)[0] #we'll align the two sequences, and get the score, but only the best one
+		alignments2 = pairwise2.align.localms(template_chain_seq,other_chain_seq, 10, -10, -7, -5)[0]
+		if alignments[2] > alignments2[2]:
+			return self,alignments[3], alignments[4]
+		else:
+			return template_chain,alignments2[3], alignments2[4]
 
 
 	def interactions(self, other_chain):
