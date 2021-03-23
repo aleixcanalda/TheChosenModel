@@ -10,7 +10,7 @@ import re
 from Bio import SeqIO
 import os, glob
 import argparse
-import Bio.PDB.Dice.ChainSelector as ChainSelector
+from Bio.PDB.Dice import *
 
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
@@ -401,6 +401,8 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 		model = start_model(interactions_dict,verbose, template)
 	chain1, chain2 = model.get_chains()
 	chain_in_model = [chain1.id,chain2.id]
+	template_struct = Structure("B")
+	template_struct.add(model)
 	print(nomen_unique)
 	if verbose:
 		print("Template has been selected to form the starting model.")
@@ -437,9 +439,11 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 					chosen_brother = probable_child[1]
 					break
 			chosen_template_chain,start,end = chain1.compare_dna(chosen_brother, chain2)
+			print(chosen_template_chain)
+			print(start)
+			print(end)
+			Bio.PDB.Dice.extract(template_struct,chosen_template_chain.id, start, end,"template_dna_superimp.pdb")
 
-			sel = model.ChainSelector(chosen_template_chain.id, start, end)
-			print(sel)
 
 
 
