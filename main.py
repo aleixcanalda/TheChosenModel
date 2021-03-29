@@ -7,17 +7,24 @@ prots_files = get_input_file(options.input_directory)
 
 get_output_file(options.output_directory, options.force)
 
+
+
 chain_list, nomen = all_chains(prots_files, options.verbose)
 
 int_dict = get_interactions_dict(chain_list, prots_files, options.verbose, options.template)
 
 if options.template is not None:
-	model = template_loop(chain_list, int_dict, nomen, options.template, options.verbose, options. stechiometry)
+	n = 0
+	filenames = []
+	while n < int(options.models):
+		model = template_loop(chain_list, int_dict, nomen, options.template, options.verbose, options. stechiometry)
+		filename = save_PDB(model, options.output_directory, n+1, options.verbose)
+		filenames.append(filename)
+		n += 1
 else:
 	model = main_loop(chain_list, int_dict, nomen, options.verbose, options. stechiometry)
-
-filename = save_PDB(model, options.output_directory, options.verbose)
+	filename = save_PDB(model, options.output_directory, options.verbose)
 
 if options.energy:
-	energy = DOPE_Energy(filename, options.output_directory, options.verbose)
-	get_profile(energy, options.output_directory)
+	for file in filenames:
+		energy = DOPE_Energy(file, options.output_directory, options.verbose)

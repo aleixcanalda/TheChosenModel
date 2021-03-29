@@ -4,24 +4,27 @@ import pylab
 import modeller
 
 
-def DOPE_Energy(model,verbose=False):
+def DOPE_Energy(model, output_path,verbose=False):
     env = Environ()
     env.libs.topology.read(file='$(LIB)/top_heav.lib') # read topology
     env.libs.parameters.read(file='$(LIB)/par.lib') # read parameters
 
     # read model file
     #model = Model(model)
-    mdl = complete_pdb(env, model)
+    output_path.rstrip("/")
+    model_path = output_path + "/structures/" + model
+    mdl = complete_pdb(env, model_path)
 
     # Assess with DOPE:
     s = Selection(mdl)   # all atom selection
-    s.assess_dope(output='ENERGY_PROFILE NO_REPORT', file='%s.profile'%model,
+    file = '%s/analysis/%s.profile'%(output_path,model)
+    s.assess_dope(output='ENERGY_PROFILE NO_REPORT', file= file,
                   normalize_profile=True, smoothing_window=15)
 
-    return '%s.profile'%model
+    get_profile(file, model, output_path)
 
 
-def get_profile(profile_file):
+def get_profile(profile_file, model, output_path):
     """Read `profile_file` into a Python array, and add gaps corresponding to
        the alignment sequence `seq`."""
     # Read all non-comment and non-blank lines from the file:
@@ -35,12 +38,12 @@ def get_profile(profile_file):
     vals.insert(0, None)
 
     # Plot the template and model profiles in the same plot for comparison:
-    pylab.figure(1, figsize=(10,6))
+    pylab.figure(int(model[5]), figsize=(10,6))
     pylab.xlabel('Alignment position')
     pylab.ylabel('DOPE per-residue score')
     pylab.plot(vals, color='red', linewidth=2, label='Model')
     pylab.legend()
-    pylab.savefig('%s.png'%profile_file, dpi=65)
+    pylab.savefig('%s/analysis/%s.png'%(output_path,model), dpi=65)
 
 
 
@@ -48,5 +51,3 @@ if __name__ == "__main__":
 
     file = DOPE_Energy("model.pdb")
     get_profile(file)
-
-

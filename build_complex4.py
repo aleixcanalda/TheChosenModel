@@ -223,7 +223,7 @@ def start_model(interactions_dict,verbose=False, template=None):
 
 	if template:
 		for hey in parser.get_structure("A",template):
-			print(hey)
+			#print(hey)
 			for chain in hey:
 				print(chain)
 				instance = MyChain(chain)
@@ -293,12 +293,10 @@ def superimpose(model, fixed_chain, moving_chain, apply_chain):
 	superimpose.apply(chain_copy) #Apply the superposition matrix
 	chain_atoms = sorted(chain_copy.get_atoms())
 	if clashes(chain_atoms, model) == True:
-		return model, True
+		return chain_copy, True
 
 	else:
-		chain_copy.parent = None
-		model.add(chain_copy)
-		return model, False
+		return chain_copy, False
 
 
 def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechiometry=None):
@@ -366,15 +364,18 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 						chaininin = [x for x in model.get_chains() if x.id == chainin]
 						newChain, modelChain = equal_length_chains(chain_model, chaininin[0])
 
-						model, not_added = superimpose(model, modelChain, newChain, chain_interact)
+						chain_copy, not_added = superimpose(model, modelChain, newChain, chain_interact)
+
 						if not_added:
 							continue
 						else:
+							chain_copy.parent = None
+							model.add(chain_copy)
 							chain_in_model.append(chain)
 
 							if stechiometry != None and problematic_keys != {}:
 								for key in problematic_keys.keys():
-									if chain_copy.id in nomen[key]:
+									if chain.id in nomen[key]:
 										problematic_keys[key] += 1
 							n += 1
 							if verbose:
@@ -391,6 +392,7 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 
 def template_loop(unique_chains_list, interactions_dict, nomen, template, verbose=False, stechiometry=None):
 	""" Main function that adds all the chains to create the final model."""
+	id_set = set()
 	if verbose:
 		print("Starting to build the model with template.")
 	if stechiometry != None:
@@ -400,10 +402,10 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 		nomen_unique = parse_stech(nomen)
 		model = start_model(interactions_dict,verbose, template)
 	chain1, chain2 = model.get_chains()
+	id_set.add(chain1.id)
+	id_set.add(chain2.id)
 	chain_in_model = [chain1.id,chain2.id]
-	template_struct = Structure("B")
-	template_struct.add(model)
-	print(nomen_unique)
+
 	if verbose:
 		print("Template has been selected to form the starting model.")
 
@@ -424,6 +426,9 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 			if chain2.id in nomen_unique[key]:
 				problematic_keys[key] += 1
 
+	last_residue = 0
+	for residue in chain1:
+		last_residue += 1
 
 	for key in nomen_unique.keys(): #we go through eevry P19, Q189,...
 		random.shuffle(nomen_unique[key]) #we shuffle the different proteins inside each P19,..
@@ -434,79 +439,52 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 					the_chosen_one = v
 					break
 			for probable_child in interactions_dict[the_chosen_one.id]:
-				print(the_chosen_one)
 				if probable_child[0] is the_chosen_one:
 					chosen_brother = probable_child[1]
 					break
 			chosen_template_chain,start,end = chain1.compare_dna(chosen_brother, chain2)
-			print(chosen_template_chain)
-			print(start)
-			print(end)
-			Bio.PDB.Dice.extract(template_struct,chosen_template_chain.id, start, end,"template_dna_superimp.pdb")
+			start += 1
+			if chosen_template_chain.id == chain2.id:
+				start = start + last_residue
+				end = end + last_residue
+			Bio.PDB.Dice.extract(chosen_template_chain,chosen_template_chain.id, start, end,"template_dna_superimp.pdb")
+
+			for struc in parser.get_structure("B","template_dna_superimp.pdb"):
+				for chain in struc.get_chains():
+					template = chain
+
+			fixed, moving = equal_length_chains(template, chosen_brother)
+			chain_copy, not_added = superimpose(model, fixed, moving, the_chosen_one)
+			if not_added:
+				continue
+			else:
+				id = chain_id(id_set)
+				chain_copy.id = id
+				id_set.add(id)
+				model.add(chain_copy)
+				chain_in_model.append(the_chosen_one.id)
+
+				if stechiometry != None and problematic_keys != {}:
+					for key in problematic_keys.keys():
+						if the_chosen_one.id in nomen[key]:
+							problematic_keys[key] += 1
+				if verbose:
+					print("Chain %s sucessfully added to the model" %the_chosen_one.id)
 
 
+	if verbose and not_added:
+		print("%s could not be added to the model" %the_chosen_one.id)
+
+	return model
 
 
-
-
-	for chain in interactions_dict.keys():
-		if chain in chain_in_model:
-			continue
-		if stechiometry != None and problematic_keys != {}:
-			key_check = ""
-			for key in problematic_keys.keys():
-				if chain in nomen_unique[key]:
-					key_check = key
-					break
-
-			if key_check != "":
-				if problematic_keys[key_check] == int(stech_file[key_check]): #if the number of chains is equal to the stechiometry, we don't add more chains.
-					n += 1
-					if verbose:
-						print("Not adding chain %s due to stechiometry" %chain)
-					continue
-
-		not_added = True
-
-		for chainin in chain_in_model:
-			if chain in chain_in_model:
-				break
-			for chain_model, chain_interact in interactions_dict[chainin]: #if our chain interacts with a chain inside the complex
-
-				if chain_interact.id == chain:
-					chaininin = [x for x in model.get_chains() if x.id == chainin]
-					newChain, modelChain = equal_length_chains(chain_model, chaininin[0])
-
-					model, not_added = superimpose(model, modelChain, newChain, chain_interact)
-					if not_added:
-						continue
-					else:
-						chain_in_model.append(chain)
-
-						if stechiometry != None and problematic_keys != {}:
-							for key in problematic_keys.keys():
-								if chain_copy.id in nomen[key]:
-									problematic_keys[key] += 1
-						n += 1
-						if verbose:
-							print("Chain %s sucessfully added to the model" %chain)
-
-						break
-
-		if verbose and not_added:
-			print("%s could not be added to the model" %chain)
-			n +=1
-
-	return model	
-
-
-def save_PDB(model, output_path, verbose=False):
+def save_PDB(model, output_path, number, verbose=False):
 	""" Function that saves the model into a PDB file. """
 	if verbose:
 		print("Saving model")
 	io = PDBIO()
 	io.set_structure(model)
-	filename = output_path + "/structures/model.pdb"
+	filename = output_path + "/structures/model" + str(number) + ".pdb"
 	io.save(filename)
 
 	return filename

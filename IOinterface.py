@@ -49,6 +49,12 @@ parser.add_argument('-t', '--template-DNA',
                     default = None,
                     help = "DNA template.")
 
+parser.add_argument('-m', '--models',
+                    dest = "models",
+                    action = "store",
+                    default = 1,
+                    help = "Number of resulting models.")
+
 
 options = parser.parse_args()
 
