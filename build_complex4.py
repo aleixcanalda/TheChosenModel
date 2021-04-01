@@ -30,6 +30,16 @@ def all_chains(PDB_files,verbose=False):
 			for chain in model: #Obtain all chains from the models
 				new_instance = MyChain(chain)
 				same_same = False
+
+				if file[:6] not in nomen.keys():
+					nomen[file[:6]] = [new_instance]
+
+				elif new_instance.get_type() != "dna":
+					nomen[file[:6]].append(new_instance)
+
+
+				"""
+
 				if nomen == {}:
 					nomen[file[:6]] = [new_instance]
 
@@ -44,6 +54,7 @@ def all_chains(PDB_files,verbose=False):
 						nomen[file[7:13]] = [new_instance]
 					else:
 						nomen[file[7:13]].append(new_instance)
+				"""
 
 				if len(model) == 3 and new_instance.get_type() == "dna":
 					chain_num += 1
@@ -58,6 +69,7 @@ def all_chains(PDB_files,verbose=False):
 								break
 					if same_same == False:
 						id_set.add(new_instance.id)
+
 				chain_num += 1
 				my_list.append(new_instance)
 
@@ -65,12 +77,6 @@ def all_chains(PDB_files,verbose=False):
 				sys.stderr.write("All PDB files must contain at least two chains.")
 
 			unique_chain_list.append(my_list)
-
-	print("unique_chain_list")
-	print(unique_chain_list)
-	print("nomen")
-	print(nomen)
-	print("interactions_dict")
 
 	return unique_chain_list, nomen
 
@@ -100,10 +106,14 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 	interactions_dict = {}
 
 	for pair in unique_chain_list:
+		print(pair)
 
 		if len(pair) == 3 and template != None:
-			chain1 = pair[0]
-			chain2 = pair[1]
+			for chain in pair:
+				if chain.get_type() != "dna":
+					chain1 = chain
+				else:
+					chain2 = chain
 
 			if interactions_dict == {}:
 				interactions_dict[chain1.id]= [[chain1, chain2]]
@@ -185,11 +195,12 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 				if checking2 == False:
 					interactions_dict[chain2.id]= [[chain2, chain1]]
 
-	print(interactions_dict)
 	return interactions_dict
 
 def parse_stech(nomen,stechiometry=None,verbose=False):
 	""" Obtain the stechiometry from the input file and from the interacting chains"""
+	print("Nomen:")
+	print(nomen)
 	nomen_unique={}
 	for keys in nomen.keys():
 		for value in nomen[keys]:
@@ -200,6 +211,8 @@ def parse_stech(nomen,stechiometry=None,verbose=False):
 					nomen_unique[keys] = [value.id]
 				elif value.id not in nomen_unique[keys]:
 					nomen_unique[keys].append(value.id)
+	print("nomen_unique:")
+	print(nomen_unique)
 	if verbose:
 		print("Obtaining the stechiometry dictionary.")
 	if stechiometry:
@@ -213,7 +226,7 @@ def parse_stech(nomen,stechiometry=None,verbose=False):
 	else:
 		return nomen_unique
 
-def start_model(interactions_dict,verbose=False, template=None):
+def start_model(interactions_dict,verbose=False, template=None, output_path=None):
 	"""Choosing the chain with most interactions as the starting model of the macrocomplex"""
 
 	model = modelmodel("A") #Create new instance of class Model
@@ -222,10 +235,16 @@ def start_model(interactions_dict,verbose=False, template=None):
 		print("Deciding the starting model.")
 
 	if template:
-		for hey in parser.get_structure("A",template):
-			#print(hey)
+		infile = open(template, "rt")
+		outfile = open(output_path + "/template.pdb", "wt")
+		for line in infile:
+			if line.startswith("ATOM"):
+				outfile.write(line)
+		infile.close()
+		outfile.close()
+		for hey in parser.get_structure("A",output_path + "/template.pdb"):
+
 			for chain in hey:
-				print(chain)
 				instance = MyChain(chain)
 				model.add(instance)
 
@@ -310,8 +329,7 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 		model = start_model(interactions_dict,verbose)
 	chain1, chain2 = model.get_chains()
 	chain_in_model = [chain1.id,chain2.id]
-	print(chain1)
-	print(chain2)
+
 	if verbose:
 		print("Chains %s and %s have been selected to form the starting model." %(chain1.id, chain2.id))
 
@@ -319,11 +337,7 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 		#nomen, stech_file = get_nomen(unique_chains_list, stechiometry)
 		problematic_keys = {}
 		for key in stech_file.keys():
-
-			if len(nomen_unique[key]) > int(stech_file[key]):
 				problematic_keys[key] = 0
-			elif len(nomen_unique[key]) < int(stech_file[key]) and verbose:
-				print("It's not possible to fulfill the stechiometry %s:%s due to an insufficient number of input chains. Only %s chains will be added to the model" %(key, stech_file[key], len(nomen[key])))
 
 		for key in problematic_keys.keys():
 			if chain1.id in nomen_unique[key]:
@@ -390,17 +404,18 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 	return model
 
 
-def template_loop(unique_chains_list, interactions_dict, nomen, template, verbose=False, stechiometry=None):
+def template_loop(unique_chains_list, interactions_dict, nomen, template, output_path, verbose=False, stechiometry=None):
 	""" Main function that adds all the chains to create the final model."""
+	print(interactions_dict)
 	id_set = set()
 	if verbose:
 		print("Starting to build the model with template.")
 	if stechiometry != None:
 		stech_file, nomen_unique = parse_stech(nomen,stechiometry)
-		model = start_model(interactions_dict,verbose, template)
+		model = start_model(interactions_dict,verbose, template, output_path)
 	else:
 		nomen_unique = parse_stech(nomen)
-		model = start_model(interactions_dict,verbose, template)
+		model = start_model(interactions_dict,verbose, template, output_path)
 	chain1, chain2 = model.get_chains()
 	id_set.add(chain1.id)
 	id_set.add(chain2.id)
@@ -412,27 +427,29 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 	if stechiometry != None:
 		#nomen, stech_file = get_nomen(unique_chains_list, stechiometry)
 		problematic_keys = {}
+
 		for key in stech_file.keys():
-
-			if len(nomen_unique[key]) > int(stech_file[key]):
-				problematic_keys[key] = 0
-			elif len(nomen_unique[key]) < int(stech_file[key]) and verbose:
-				print("It's not possible to fulfill the stechiometry %s:%s due to an insufficient number of input chains. Only %s chains will be added to the model" %(key, stech_file[key], len(nomen[key])))
-
-		for key in problematic_keys.keys():
-			if chain1.id in nomen_unique[key]:
-				problematic_keys[key] += 1
-
-			if chain2.id in nomen_unique[key]:
-				problematic_keys[key] += 1
+			problematic_keys[key] = 0
+		print(problematic_keys)
 
 	last_residue = 0
 	for residue in chain1:
 		last_residue += 1
 
-	for key in nomen_unique.keys(): #we go through eevry P19, Q189,...
+	for key in nomen_unique.keys(): #we go through every P19, Q189,...
+		print(key)
 		random.shuffle(nomen_unique[key]) #we shuffle the different proteins inside each P19,..
 		for ids in nomen_unique[key]: #we go through every protein in P19 to add them to the template
+			print(ids)
+			if stechiometry != None and problematic_keys != {}:
+				#print("hey")
+				#print(problematic_keys[key])
+				#print(int(stech_file[key]))
+				if problematic_keys[key] == int(stech_file[key]): #if the number of chains is equal to the stechiometry, we don't add more chains.
+					if verbose:
+						print("Not adding chain %s due to stechiometry" %ids)
+					break
+
 			random.shuffle(nomen[key])
 			for v in nomen[key]: #we get the id from inside the specific P19
 				if v.id == ids:
@@ -447,15 +464,18 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 			if chosen_template_chain.id == chain2.id:
 				start = start + last_residue
 				end = end + last_residue
-			Bio.PDB.Dice.extract(chosen_template_chain,chosen_template_chain.id, start, end,"template_dna_superimp.pdb")
+			output_path.rstrip("/")
+			create = output_path + "/template_dna_superimp.pdb"
+			Bio.PDB.Dice.extract(chosen_template_chain,chosen_template_chain.id, start, end, create)
 
-			for struc in parser.get_structure("B","template_dna_superimp.pdb"):
+			for struc in parser.get_structure("B",create):
 				for chain in struc.get_chains():
 					template = chain
 
 			fixed, moving = equal_length_chains(template, chosen_brother)
 			chain_copy, not_added = superimpose(model, fixed, moving, the_chosen_one)
 			if not_added:
+				print(not_added)
 				continue
 			else:
 				id = chain_id(id_set)
@@ -465,15 +485,15 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, verbos
 				chain_in_model.append(the_chosen_one.id)
 
 				if stechiometry != None and problematic_keys != {}:
-					for key in problematic_keys.keys():
-						if the_chosen_one.id in nomen[key]:
-							problematic_keys[key] += 1
+					problematic_keys[key] += 1
 				if verbose:
-					print("Chain %s sucessfully added to the model" %the_chosen_one.id)
+					print("Chain %s from %s sucessfully added to the model" %(the_chosen_one.id, key))
 
 
-	if verbose and not_added:
-		print("%s could not be added to the model" %the_chosen_one.id)
+	if verbose:
+		for key in problematic_keys.keys():
+			if problematic_keys[key] < int(stech_file[key]):
+				print("Stechiometry could no be fulfilled in protein %s due to clashes." %(key))
 
 	return model
 

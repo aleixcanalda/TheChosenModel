@@ -17,7 +17,7 @@ if options.template is not None:
 	n = 0
 	filenames = []
 	while n < int(options.models):
-		model = template_loop(chain_list, int_dict, nomen, options.template, options.verbose, options. stechiometry)
+		model = template_loop(chain_list, int_dict, nomen, options.template, options.output_directory, options.verbose, options. stechiometry)
 		filename = save_PDB(model, options.output_directory, n+1, options.verbose)
 		filenames.append(filename)
 		n += 1
