@@ -77,6 +77,10 @@ These are all the arguments that can be introduced to our program:
   -v, --verbose         Print the progession of the execution.
   
   -e, --energy          Calculate DOPE energy and plot the result.
+  
+  -t --template-DNA     DNA template for models with only protein-DNA interactions.
+   
+  -m --models           Number of resulting models.
 ```
 
 ### Input (mandatory argument)
@@ -94,6 +98,9 @@ B:2
 ### Output directory (mandatory argument)
 
 If the directory doesn't exist, it will be created automatically but if the user introduces an already existing directory, it will raise an error unless he specifies that he wants to overwrite the content (using the -force argument).
+
+### Template DNA
+It is a mandatory argument when the model consists only of protein-DNA interactions that form a long strand of DNA where the proteins interact. The input is the path to a file containing the both strands of a DNA sequence as a PDB file.
 
 ## Examples
 
