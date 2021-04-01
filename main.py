@@ -23,7 +23,7 @@ if options.template is not None:
 		n += 1
 else:
 	model = main_loop(chain_list, int_dict, nomen, options.verbose, options. stechiometry)
-	filename = save_PDB(model, options.output_directory, options.verbose)
+	filename = save_PDB(model, options.output_directory, 1, options.verbose)
 
 if options.energy:
 	for file in filenames:
