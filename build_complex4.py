@@ -178,7 +178,7 @@ def parse_stech(nomen,stechiometry=None,verbose=False):
 	print("Nomen:")
 	print(nomen)
 	nomen_unique={}
-	for keys in nomen.keys():
+	for keys in nomen.keys(): #here we create another stechiometry dictionary from the file names but this time without repeating values
 		for value in nomen[keys]:
 			if nomen_unique == {}:
 				nomen_unique[keys] = [value.id]
@@ -189,7 +189,7 @@ def parse_stech(nomen,stechiometry=None,verbose=False):
 					nomen_unique[keys].append(value.id)
 	if verbose:
 		print("Obtaining the stechiometry dictionary.")
-	if stechiometry:
+	if stechiometry: #here we obtain the specific stechiometry given by the user
 		stech_file={}
 		fd = open(stechiometry, "r")
 		for line in fd:
@@ -208,7 +208,7 @@ def start_model(interactions_dict,verbose=False, template=None, output_path=None
 	if verbose:
 		print("Deciding the starting model.")
 
-	if template:
+	if template: #if we have a template, that will be the starting model
 		infile = open(template, "rt")
 		outfile = open(output_path + "/template.pdb", "wt")
 		for line in infile:
@@ -222,7 +222,7 @@ def start_model(interactions_dict,verbose=False, template=None, output_path=None
 				instance = MyChain(chain)
 				model.add(instance)
 
-	else:
+	else: #if not, we will choose the chain that has the most interactions as the starting model, next to its interacting pair
 
 		most_inter = 0
 
@@ -248,7 +248,7 @@ def equal_length_chains(chain1, chain2):
 	atoms1 = sorted(chain1.get_atoms())
 	atoms2 = sorted(chain2.get_atoms())
 
-	if len(atoms1) > len(atoms2):
+	if len(atoms1) > len(atoms2): #if one chain is longer than the other, we will return the longer chain with the length of the shorter one
 		return atoms1[:len(atoms2)], atoms2
 
 	elif len(atoms1) < len(atoms2):
@@ -300,16 +300,15 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 		stech_file, nomen_unique = parse_stech(nomen,stechiometry)
 		model = start_model(interactions_dict,verbose)
 	else:
-		model = start_model(interactions_dict,verbose)
+		model = start_model(interactions_dict,verbose) #we start the model
 	chain1, chain2 = model.get_chains()
-	chain_in_model = [chain1.id,chain2.id]
+	chain_in_model = [chain1.id,chain2.id] #we create a file that contains the chains that are already in the model
 
 	if verbose:
 		print("Chains %s and %s have been selected to form the starting model." %(chain1.id, chain2.id))
 
-	if stechiometry != None:
-		#nomen, stech_file = get_nomen(unique_chains_list, stechiometry)
-		problematic_keys = {}
+	if stechiometry != None: #if we have a stechiometry file
+		problematic_keys = {} #we create a dictionary where we'll keep track of the chains added to the model
 		for key in stech_file.keys():
 				problematic_keys[key] = 0
 
