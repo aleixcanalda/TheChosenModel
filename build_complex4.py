@@ -312,7 +312,7 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 		for key in stech_file.keys():
 				problematic_keys[key] = 0
 
-		for key in problematic_keys.keys():
+		for key in problematic_keys.keys(): 
 			if chain1.id in nomen_unique[key]:
 				problematic_keys[key] += 1
 
@@ -320,9 +320,9 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 				problematic_keys[key] += 1
 
 	n = 2
-	while n<len(interactions_dict.keys()):
+	while n<len(interactions_dict.keys()): #we'll go through every interaction in the interactions dictionary
 		for chain in interactions_dict.keys():
-			if chain in chain_in_model:
+			if chain in chain_in_model: #if our chain is already in the model, move to the next one
 				continue
 
 			if stechiometry != None and problematic_keys != {}:
@@ -342,25 +342,25 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 
 			not_added = True
 
-			for chainin in chain_in_model:
+			for chainin in chain_in_model: #to see if the chain that we're looking at now interacts with the ones in the model, we'll create a new loop
 				if chain in chain_in_model:
 					break
 				for chain_model, chain_interact in interactions_dict[chainin]: #if our chain interacts with a chain inside the complex
 
 					if chain_interact.id == chain:
-						chaininin = [x for x in model.get_chains() if x.id == chainin]
-						newChain, modelChain = equal_length_chains(chain_model, chaininin[0])
+						chaininin = [x for x in model.get_chains() if x.id == chainin] #we obtain the chain from the chain id "chainin"
+						newChain, modelChain = equal_length_chains(chain_model, chaininin[0]) #we obtain the atoms from the chains
 
-						chain_copy, not_added = superimpose(model, modelChain, newChain, chain_interact)
+						chain_copy, not_added = superimpose(model, modelChain, newChain, chain_interact) #we superimpose the two identical chains
 
-						if not_added:
+						if not_added: #if the chain clashes with the model, go to the next chain
 							continue
 						else:
 							chain_copy.parent = None
-							model.add(chain_copy)
+							model.add(chain_copy) #if there are no clashes, add the chain to the model
 							chain_in_model.append(chain)
 
-							if stechiometry != None and problematic_keys != {}:
+							if stechiometry != None and problematic_keys != {}: #if we are looking at the stechiometry, we'll add the new chain to keep track of it
 								for key in problematic_keys.keys():
 									if chain.id in nomen[key]:
 										problematic_keys[key] += 1
@@ -378,14 +378,14 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 
 
 def template_loop(unique_chains_list, interactions_dict, nomen, template, output_path, verbose=False, stechiometry=None):
-	""" Main function that adds all the chains to create the final model."""
+	""" Main function that adds all the chains to create the final model. This function takes into account a DNA template for DNA-prot interactions."""
 	print(interactions_dict)
-	id_set = set()
+	id_set = set() #the way to start is the same as for the function "main_loop"
 	if verbose:
 		print("Starting to build the model with template.")
-	if stechiometry != None:
+	if stechiometry != None: 
 		stech_file, nomen_unique = parse_stech(nomen,stechiometry)
-		model = start_model(interactions_dict,verbose, template, output_path)
+		model = start_model(interactions_dict,verbose, template, output_path) 
 	else:
 		nomen_unique = parse_stech(nomen)
 		model = start_model(interactions_dict,verbose, template, output_path)
@@ -415,37 +415,34 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, output
 		for ids in nomen_unique[key]: #we go through every protein in P19 to add them to the template
 			print(ids)
 			if stechiometry != None and problematic_keys != {}:
-				#print("hey")
-				#print(problematic_keys[key])
-				#print(int(stech_file[key]))
 				if problematic_keys[key] == int(stech_file[key]): #if the number of chains is equal to the stechiometry, we don't add more chains.
 					if verbose:
 						print("Not adding chain %s due to stechiometry" %ids)
 					break
-
-			random.shuffle(nomen[key])
+					
+			random.shuffle(nomen[key]) #we shuffle the different structures, since in this program we choose one but don't reconstruct it
 			for v in nomen[key]: #we get the id from inside the specific P19
 				if v.id == ids:
 					the_chosen_one = v
 					break
-			for probable_child in interactions_dict[the_chosen_one.id]:
+			for probable_child in interactions_dict[the_chosen_one.id]: #we get the interacting dna chain of the chosen protein
 				if probable_child[0] is the_chosen_one:
 					chosen_brother = probable_child[1]
 					break
-			chosen_template_chain,start,end = chain1.compare_dna(chosen_brother, chain2)
+			chosen_template_chain,start,end = chain1.compare_dna(chosen_brother, chain2) #we see which chain form the template is the one that our protein interacts with and specifically which zone
 			start += 1
-			if chosen_template_chain.id == chain2.id:
+			if chosen_template_chain.id == chain2.id: #if our template chain is the reverse dna chain, we'll add the start and end residues
 				start = start + last_residue
 				end = end + last_residue
 			output_path.rstrip("/")
 			create = output_path + "/template_dna_superimp.pdb"
-			Bio.PDB.Dice.extract(chosen_template_chain,chosen_template_chain.id, start, end, create)
+			Bio.PDB.Dice.extract(chosen_template_chain,chosen_template_chain.id, start, end, create) #this function cuts the template only in the zone we want to superimpose and creates a new pdb file
 
 			for struc in parser.get_structure("B",create):
 				for chain in struc.get_chains():
 					template = chain
 
-			fixed, moving = equal_length_chains(template, chosen_brother)
+			fixed, moving = equal_length_chains(template, chosen_brother) #the rest is like in the "main_loop" function
 			chain_copy, not_added = superimpose(model, fixed, moving, the_chosen_one)
 			if not_added:
 				print(not_added)
