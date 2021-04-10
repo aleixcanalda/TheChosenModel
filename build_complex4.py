@@ -15,7 +15,7 @@ from Bio.PDB.Dice import *
 parser = PDBParser(PERMISSIVE=1, QUIET=True)
 
 def all_chains(PDB_files,verbose=False):
-	""" Creating an object for every unique PDB chain. """
+	""" Creating an object for every unique PDB chain, sending a dictionary for the stechiometry and a list with lists of interacting chains"""
 
 	unique_chain_list=[]
 	id_set=set()
@@ -28,40 +28,21 @@ def all_chains(PDB_files,verbose=False):
 			chain_num = 0
 			my_list = []
 			for chain in model: #Obtain all chains from the models
-				new_instance = MyChain(chain)
+				new_instance = MyChain(chain) #transform into our chain class
 				same_same = False
 
-				if file[:6] not in nomen.keys():
+				if file[:6] not in nomen.keys(): #we create a dictionary with the names in the file for the stechiometry and the chain inside that file
 					nomen[file[:6]] = [new_instance]
 
-				elif new_instance.get_type() != "dna":
+				elif new_instance.get_type() != "dna": 
 					nomen[file[:6]].append(new_instance)
 
-
-				"""
-
-				if nomen == {}:
-					nomen[file[:6]] = [new_instance]
-
-				elif chain_num == 0:
-					if file[:6] not in nomen.keys():
-						nomen[file[:6]] = [new_instance]
-					else:
-						nomen[file[:6]].append(new_instance)
-
-				elif chain_num == 1 and len(model) == 2: #If it's the second chain and it's a protein pair.
-					if file[7:13] not in nomen.keys():
-						nomen[file[7:13]] = [new_instance]
-					else:
-						nomen[file[7:13]].append(new_instance)
-				"""
-
-				if len(model) == 3 and new_instance.get_type() == "dna":
+				if len(model) == 3 and new_instance.get_type() == "dna": #if we have dna in our structure we won't change the dna id
 					chain_num += 1
 					my_list.append(new_instance)
 					continue
 
-				else:
+				else: #here we change the id of a protein if it is new in the unique_chain_list
 					for chains in unique_chain_list:
 						for chainss in chains:
 							if new_instance.compare_sequence(chainss) == 2:
@@ -106,9 +87,8 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 	interactions_dict = {}
 
 	for pair in unique_chain_list:
-		print(pair)
 
-		if len(pair) == 3 and template != None:
+		if len(pair) == 3 and template != None: #if we have a template, we will only use one dna chain
 			for chain in pair:
 				if chain.get_type() != "dna":
 					chain1 = chain
@@ -144,7 +124,7 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 				checking2 = False
 				checking3 = False
 				for key in interactions_dict.keys():
-					check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
+					check1 = chain1.compare_sequence(interactions_dict[key][0][0])
 					if check1 == 2 or chain1.id == key:
 						interactions_dict[key].append([chain1, chain2])
 						interactions_dict[key].append([chain1, chain3])
@@ -159,7 +139,7 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 						interactions_dict[key].append([chain3, chain1])
 						interactions_dict[key].append([chain3, chain2])
 						checking3 = True
-				if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
+				if checking1 == False:
 					interactions_dict[chain1.id]= [[chain1, chain2],[chain1,chain3]]
 				if checking2 == False:
 					interactions_dict[chain2.id]= [[chain2, chain1],[chain2,chain3]]
@@ -167,13 +147,9 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 					interactions_dict[chain3.id]= [[chain3, chain1],[chain3,chain2]]
 
 
-		else:
+		else: #if we don't have dna, only protein-protein interactions
 			chain1 = pair[0]
 			chain2 = pair[1]
-
-			#interact_1, interact_2 = chain1.interactions(chain2)
-			#if interact_1 == set() and interact_2 == set():
-			#	continue
 
 			if interactions_dict == {}:
 				interactions_dict[chain1.id]= [[chain1, chain2]]
@@ -181,8 +157,8 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 			else:
 				checking1 = False
 				checking2 = False
-				for key in interactions_dict.keys():
-					check1 = chain1.compare_sequence(interactions_dict[key][0][0]) ##Dilemes de l'Aleix 2.0 (igual coordenada, igual seqüència)
+				for key in interactions_dict.keys(): #we will see if the chain is already inside the dictionary keys or not, and add it if it isn't
+					check1 = chain1.compare_sequence(interactions_dict[key][0][0]) 
 					if check1 == 2:
 						interactions_dict[key].append([chain1, chain2])
 						checking1 = True
@@ -190,7 +166,7 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 					if check2 == 2:
 						interactions_dict[key].append([chain2, chain1])
 						checking2 = True
-				if checking1 == False: ##WHAT WHAT Dilemes de la MAria 1.0 (per que check1 ja no es true?)
+				if checking1 == False: 
 					interactions_dict[chain1.id]= [[chain1, chain2]]
 				if checking2 == False:
 					interactions_dict[chain2.id]= [[chain2, chain1]]
@@ -211,8 +187,6 @@ def parse_stech(nomen,stechiometry=None,verbose=False):
 					nomen_unique[keys] = [value.id]
 				elif value.id not in nomen_unique[keys]:
 					nomen_unique[keys].append(value.id)
-	print("nomen_unique:")
-	print(nomen_unique)
 	if verbose:
 		print("Obtaining the stechiometry dictionary.")
 	if stechiometry:
