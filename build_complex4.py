@@ -461,9 +461,10 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, output
 
 
 	if verbose:
-		for key in problematic_keys.keys():
-			if problematic_keys[key] < int(stech_file[key]):
-				print("Stechiometry could no be fulfilled in protein %s due to clashes." %(key))
+		if stechiometry != None:
+			for key in problematic_keys.keys():
+				if problematic_keys[key] < int(stech_file[key]):
+					print("Stechiometry could no be fulfilled in protein %s due to clashes." %(key))
 
 	return model
 
@@ -477,4 +478,4 @@ def save_PDB(model, output_path, number, verbose=False):
 	filename = output_path + "/structures/model" + str(number) + ".pdb"
 	io.save(filename)
 
-	return filename
+	return "model" + str(number)
