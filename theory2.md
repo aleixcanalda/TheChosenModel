@@ -52,9 +52,53 @@ We have developed a program to model the macro-complex structure of biomolecules
 
 # Tutorial
 
-## Installation
-...
+## Software Requirements
 
+To be able to run the program smoothly and correctly, there are certain requirements that need to be met:
+
+ * Python version 3.6
+
+The following python modules:
+
+ * Argparse
+
+ * Biopython
+
+ * re
+
+ * random
+
+ * gzip
+
+ * os
+
+ * sys
+
+ * 
+
+In order to run the -e --energy argument:
+
+ * Modeller version 10.1
+
+ * matplotlib
+
+## Download and Installation
+
+You can download the package to start its use with the following code:
+
+```{.sh}
+
+git clone https://github.com/aleixcanalda/Macro-Aleix-Maria.git
+cd Macro-Aleix-Maria
+
+```
+There should be a script called setup.py with which we will do the installation. Nevertheless, before doing so, we should make sure that we have the requirements described above, otherwise the installation won't work.
+
+```{.sh}
+
+sudo python3 setup.py install
+
+```
 ## Command-line arguments
 
 These are all the arguments that can be introduced to our program:
@@ -85,15 +129,21 @@ These are all the arguments that can be introduced to our program:
 
 ### Input (mandatory argument)
 
-As we can see above, the input has to be a directory containing only PDB files. These files have to include two interacting chains from the model and the name of each file has to follow a set structure: name_chain1_chain2.pdb(.gz) where the name is an alphanumerical string and the chains must coincide with the IDs of the chains inside the file. As it can be seen, the PDB files can either be compressed or not.
+As we can see above, the input has to be a directory containing only PDB files. These files have to include two interacting chains from the model and the name of each file has to follow a set structure: chain1stechiometry_chain2stechiometry.name_chain1_chain2.pdb(.gz) where chain1stechiometry is an alphanumerical string that will be used to identify the stechiometry of the structure, the name is an alphanumerical string and the chains must coincide with the IDs of the chains inside the file. As it can be seen, the PDB files can either be compressed or not.
+
+Example of input files for the protein macrocomplex 1gzx:
+
+P69905_P68871.1gzx_A_B.pdb
+P69905_P69905.1gzx_A_C.pdb
+P69905_P68871.1gzx_A_D.pdb
 
 ### Stechiometry
 
 The stechiometry file must contain a line for each chain and its associated number, such as:
 
-A:2
+P69905:2
 
-B:2
+P68871:2
 
 ### Output directory (mandatory argument)
 
