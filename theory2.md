@@ -80,7 +80,7 @@ In order to run the -e --energy argument:
 
  * Modeller version 10.1
 
- * matplotlib
+ * pylab
 
 ## Download and Installation
 
@@ -148,6 +148,9 @@ P68871:2
 ### Output directory (mandatory argument)
 
 If the directory doesn't exist, it will be created automatically but if the user introduces an already existing directory, it will raise an error unless he specifies that he wants to overwrite the content (using the -force argument).
+
+### Energy
+It calculates the DOPE score for each model and it builds a DOPE profile used to create a plot of the DOPE score along the sequence. To use this argument is necessary to have the modules of modeller and pylab installed.
 
 ### Template DNA
 It is a mandatory argument when the model consists only of protein-DNA interactions that form a long strand of DNA where the proteins interact. The input is the path to a file containing the both strands of a DNA sequence as a PDB file.
