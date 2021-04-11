@@ -71,9 +71,9 @@ class MyChain(Chain):
 		chain_seq = self.get_sequence_chain()
 		other_chain_seq = other_chain.get_sequence_chain()
 		template_chain_seq = template_chain.get_sequence_chain()
-		alignments = pairwise2.align.localms(chain_seq,other_chain_seq, 10, -10, -7, -5)[0] #we'll align the two sequences, and get the score, but only the best one
-		alignments2 = pairwise2.align.localms(template_chain_seq,other_chain_seq, 10, -10, -7, -5)[0]
-		if alignments[2] > alignments2[2]:
+		alignments = pairwise2.align.localms(chain_seq,other_chain_seq, 10, -10, -7, -5)[0] 
+		alignments2 = pairwise2.align.localms(template_chain_seq,other_chain_seq, 10, -10, -7, -5)[0] #we will use these scores and a local alignment because our sequence aligns with a part of the template
+		if alignments[2] > alignments2[2]: #we will compare the alignment score to see which strand we're looking at, plus send the start and end positions
 			return self,alignments[3], alignments[4]
 		else:
 			return template_chain,alignments2[3], alignments2[4]
