@@ -146,7 +146,25 @@ However, after doing a superimposition, a possibel interference between the new 
 
 ## Strengths
 
+* Our program is capable of fully forming protein macrocomplexes from an input of pairs of interacting chains in said macrocomplex.
+
+* It is capable of forming macrocomplexes that contain both protein-protein interactions and protein-dna interactions, as well as using RNA data.
+
+* It is able to compute different models for protein-dna interactions. With the correct input, protein-protein final macrocomplex doesn't vary so it doesn't need various models. 
+
+* With the stechiometry input, the user decides if they want to limit the number of chains in a macrocomplex.
+
+* Our program is able to calculate, if the user wishes, the DOPE energy of the protein and it gives an energy profile to see if the results are good, especially in those cases where RMSD calculation is not possible.
+
 ## Weaknesses
+
+* The computational cost of our program increases linearly, so when working with big macro-complexes, the number of possible comparisons increases as the core structure of the macro-complex gets bigger and so does the computational time of the program.
+
+* Our program is able to compute various protein-dna interactions (if the input files contain both dna chains) only when using a dna template.
+
+* It is not able to compute macrocomplexes that have a series of protein-protein interactions and at the same time protein-dna interaction, but only when the input files contain both dna chains (in cases where the input files only have one dna chain, it is possible).
+
+* When various fragments of a chain are given, our program does not complete the chain, but chooses randomly one fragment. 
 
 # Analysis
 
