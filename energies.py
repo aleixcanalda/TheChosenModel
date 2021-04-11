@@ -5,13 +5,14 @@ import modeller
 
 
 def DOPE_Energy(model, output_path,verbose=False):
+    output_path.rstrip("/")
+    sys.stdout = open(output_path + "/analysis/" + model + ".DOPE",'w')
     env = Environ()
     env.libs.topology.read(file='$(LIB)/top_heav.lib') # read topology
     env.libs.parameters.read(file='$(LIB)/par.lib') # read parameters
 
     # read model file
-    output_path.rstrip("/")
-    model_path = output_path + "/structures/" + model
+    model_path = output_path + "/structures/" + model + ".pdb"
     mdl = complete_pdb(env, model_path)
 
     # Assess with DOPE:
@@ -20,6 +21,7 @@ def DOPE_Energy(model, output_path,verbose=False):
     s.assess_dope(output='ENERGY_PROFILE NO_REPORT', file= file,
                   normalize_profile=True, smoothing_window=15)
 
+    sys.stdout.close()
     get_profile(file, model, output_path)
 
 
