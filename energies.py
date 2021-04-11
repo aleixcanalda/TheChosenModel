@@ -10,7 +10,6 @@ def DOPE_Energy(model, output_path,verbose=False):
     env.libs.parameters.read(file='$(LIB)/par.lib') # read parameters
 
     # read model file
-    #model = Model(model)
     output_path.rstrip("/")
     model_path = output_path + "/structures/" + model
     mdl = complete_pdb(env, model_path)
