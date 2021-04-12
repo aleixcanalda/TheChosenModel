@@ -165,6 +165,16 @@ With this line what we are doing is giving as input (-i) the pair of chain inter
 
 The final result of the model can be seen in the Analysis section of this document.
 
+The other example we will show is of the macro-complex 2o61. This macro-complex is formed solely on dna-protein interactions, so it is necessary to add a template where the DNA can superimpose itself.
+```{.sh}
+
+TheChosenModel.py -i 2o61/ -o 2o61_results -t -m 2 -s stechiometry_file
+
+```
+With this line what we are doing is giving as input (-i) the pair of chain interactions that will form the macro-complex 1gzx, the output folder where we want to store the results (-o). Also, we will send the template for the dna (-t) and we will recieve two different models (-m 2). The program will also satisfy (or try to) the stechiometry that is described inside "stechiometry_file".
+
+The final result of the model can be seen in the Analysis section of this document.
+
 # Algorithm
 
 In this section, the algorithm that the program uses will be explained step by step. The program starts by processing the arguments provided by the user which are, at the bare minimum, the required input and output directory. It performs a necessary check to ensure that both the input files and the stechiometry file (if provided) have the correct structure, otherwise it will raise the appropiate error. Then, the program uses a function called **all_chains** to create a list containing all the interactions corresponding to the input files. The interactions are saved in pairs in the case of proten-protein interactions and in trios in the case of protein-DNA interactions, where there are the two complementary strands of DNA to take into account. This function also creates a dictionary to keep the information of which protein each chain belongs to, which is going to be helpful in further steps. In both cases, the chains are saved as an object of a self-developed class (**MyChain**), that is a child of the Chain class of the Bio.PDB.Chain module, created in order to include some extra functions that will be useful throughout the program.
