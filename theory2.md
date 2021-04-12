@@ -74,8 +74,6 @@ The following python modules:
 
  * sys
 
- * 
-
 In order to run the -e --energy argument:
 
  * Modeller version 10.1
