@@ -86,8 +86,8 @@ You can download the package to start its use with the following code:
 
 ```{.sh}
 
-git clone https://github.com/aleixcanalda/Macro-Aleix-Maria.git
-cd Macro-Aleix-Maria
+git clone https://github.com/aleixcanalda/TheChosenModel.git
+cd TheChosenModel
 
 ```
 There should be a script called setup.py with which we will do the installation. Nevertheless, before doing so, we should make sure that we have the requirements described above, otherwise the installation won't work.
