@@ -48,7 +48,7 @@ authorshort: YOURSURNAME, YOURNAMEshort
 
 # Introduction
 
-We have developed a program to model the macro-complex structure of biomolecules, including proteins and DNA, using as an input the sequences of the pair interactions of the complex. This manual will include a tutorial explaining how to use the program using some examples, a theoretical explanation of the algorithm and the biological background behind it and, lastly, an analysis of the results of some examples, to assess the quality of the solutions our program offers.
+We have developed a program called TheChosenModel to model the macro-complex structure of biomolecules, including proteins and DNA, using as an input the sequences of the pair interactions of the complex. This manual will include a tutorial explaining how to use the program using some examples, a theoretical explanation of the algorithm and the biological background behind it and, lastly, an analysis of the results of some examples, to assess the quality of the solutions our program offers.
 
 # Tutorial
 
@@ -155,6 +155,15 @@ It is a mandatory argument when the model consists only of protein-DNA interacti
 
 ## Examples
 
+Our first example will be with the protein macro-complex 1gzx. The way to use the program in the terminal with this macrocomplex (available inside the examples folder), is as follows:
+```{.sh}
+
+TheChosenModel.py -i 1gzx/ -o 1gzx_results -f -v -e
+
+```
+With this line what we are doing is giving as input (-i) the pair of chain interactions that will form the macro-complex 1gzx, the output folder where we want to store the results (-o), and if this folder already exists, we'll overwrite it (-f). Also, we will show on the terminal the different steps that the program is going through, to keep track, with the verbose argument (-v). And lastly, we will calculate the energies of the resulting model as well as its energy profile.
+
+The final result of the model can be seen in the Analysis section of this document.
 
 # Algorithm
 
