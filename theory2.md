@@ -168,10 +168,10 @@ The final result of the model can be seen in the Analysis section of this docume
 The other example we will show is of the macro-complex 2o61. This macro-complex is formed solely on dna-protein interactions, so it is necessary to add a template where the DNA can superimpose itself.
 ```{.sh}
 
-TheChosenModel.py -i 2o61/ -o 2o61_results -t -m 2 -s stechiometry_file
+TheChosenModel.py -i 2o61/ -o 2o61_results -t template_file -m 2 -s stechiometry_file
 
 ```
-With this line what we are doing is giving as input (-i) the pair of chain interactions that will form the macro-complex 1gzx, the output folder where we want to store the results (-o). Also, we will send the template for the dna (-t) and we will recieve two different models (-m 2). The program will also satisfy (or try to) the stechiometry that is described inside "stechiometry_file".
+With this line what we are doing is giving as input (-i) the pair of chain interactions that will form the macro-complex 1gzx, the output folder where we want to store the results (-o). Also, we will send the template ("template_file") for the dna (-t) and we will recieve two different models (-m 2). The program will also satisfy (or try to) the stechiometry that is described inside "stechiometry_file".
 
 The final result of the model can be seen in the Analysis section of this document.
 
