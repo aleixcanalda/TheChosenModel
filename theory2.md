@@ -223,7 +223,7 @@ However, after doing a superimposition, a possibel interference between the new 
 
 * It is capable of forming macrocomplexes that contain both protein-protein interactions and protein-dna interactions, as well as using RNA data.
 
-* It is able to compute different models for protein-dna interactions. With the correct input, protein-protein final macrocomplex doesn't vary so it doesn't need various models. 
+* It is able to compute different models for both protein-protein and protein-dna interactions. 
 
 * With the stechiometry input, the user decides if they want to limit the number of chains in a macrocomplex.
 
