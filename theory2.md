@@ -266,7 +266,7 @@ However, after doing a superimposition, a possibel interference between the new 
 
 * Our program is able to compute various protein-DNA interactions (if the input files contain both DNA chains) only when using a DNA template.
 
-* It not is able to compute macrocomplexes that have a series of protein-protein interactions and at the same time protein-DNA interactions, when the input files contain both DNA chains. If the input files are provided as in the case of protein-protein interactions (meaning that there are two files, one for protein1 interacting with one DNA strand and another for protein1 interacting with the complementary DNA strand), then it is possible to build the complex.
+* It is not able to compute macrocomplexes that have a series of protein-protein interactions and at the same time protein-DNA interactions, when the input files contain both DNA chains. If the input files are provided as in the case of protein-protein interactions (meaning that there are two files, one for protein1 interacting with one DNA strand and another for protein1 interacting with the complementary DNA strand), then it is possible to build the complex.
 
 * When various fragments of a chain are given, our program does not complete the chain, but chooses randomly one fragment.
 
