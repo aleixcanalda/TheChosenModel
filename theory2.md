@@ -276,7 +276,13 @@ With our examples, we decided to analyze the models both ways:
 * **5fj8**. This macrocomplex is the yeast RNA polymerase III elongation complex. The global stechiometry is a Hetero 17-mer, containing 17 unique protein chains and 3 unique nucleic acid chains, one RNA and DNA molecules. The RSMD between the model and the complex is also 0.000 between 1422 pruned atoms pairs and the DOPE score -497916.468750, with the profile shown below in Figure Y.
   ![Figure X. Energy profile of the 5fj8 model.](./images/DOPE_energy_5fj8.png "Figure X. Energy profile of 6gmh model.")
   ![Figure Y. Chimera superimposition of the 5fj8 model with full structure.](./images/5fj8superimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
-  * **2O61**. -79804.953125
+* **2O61**. This macrocomplex is the crystal structure of NFkB, IRF7, IRF3 bound to the interferon-b enhancer. To build the complex, the files from the example provided in class were used. It was build using the stechiometry provided and also using as a template the interferon b enhancer DNA. 4 different models were build and the best model has a DOPE score of -85164.250000. Nevertheless, the model with the second best score (-83004.679688) has a better RMSD when compared with the PDB structure, with a value of 8.051 across all 546 atom pairs.
+ In the Figure X and Y we can see the DOPE profile and the visualisation with Chimera for the model with the best score. Below we can see the second best model and its superimposition with the 2O61 structure taken from the PDB.
+
+ ![Figure X. Energy profile of the 2O61 model.](./images/DOPE_energy_2O61.png "Figure X. Energy profile of 2O61 model.")
+ ![Figure Y. Visualisation with Chimera of the model with best DOPE score for the 2O61 complex.](./images/2O61.png "Figure Y. Chimera visualisation of 2O61 model with full structure.")
+ ![Figure Z. Visualisation with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.png "Figure Z. Chimera visualisation of 2O61 model with full structure.")
+ ![Figure A. Superimposition with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.png "Figure A. Chimera superimposition of 2O61 model with full structure.")
 
 
 # References
