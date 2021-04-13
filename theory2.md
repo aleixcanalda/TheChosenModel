@@ -203,7 +203,7 @@ First of all, the function calls another function named **parse_stech** to extra
 
 At this point, the main loop of the program begins, going through all the interactions and trying to superimpose one chain at a time using the interactions dictionary to find the interactions between the new chain being added and the chains already in the model in an iterative fashion. When an interaction is found and the two chains necessary for the superimposition are located, first a function called **equal_length_chains** will check that the two chains have equal length (a mandatory requirement to do the superimposition). Then, the program uses a function called **superimpose** that employs the Bio.PDB.Superimposer module to superimpose two identical subunits (chains that have at least 95% similarity), and along with them, its respective interacting chain by applying to it the transformation matrix created with the superimposition of the two identical subunits. For instance, if the model contains an interaction (A-B) and then chain C has to be added, a pair of interacting chains is supplied (in this case, A-C). Then the function will be able to superimpose A-A, creating a transformation matrix that will be applied to C in order to obtain the structure with the 3 chains, as shown in Figure 1.
 
-![Figure 1. Process for a superimposition of two interacting pairs of chains.](./images/superimp.png "Figure X. Process for a superimposition of two interacting pairs of chains.")
+![Figure 1. Process for a superimposition of two interacting pairs of chains.](./images/superimp.png "Figure 1. Process for a superimposition of two interacting pairs of chains.")
 
 Before adding the superimposed chain to the model, the presence of clashes with the rest of the model has to be assessed, in order to decide whether to add the chain to the model or not. To that end, the **superimpose** function calls the function **clashes** to calculate the amount of clashes using the Bio.PDB.NeighborSearch module, that analyzes if some of the atoms of two chains are too close to each other. If more than 5% of the atoms are at a distance shorter than 2 Armstrongs, it is considered a clash and the chain will not be added to the model. If this is the case, then the function will try to superimpose the current chain using another one of its interactions and it will keep repeating until it can fit in the chain without clashes. If, after trying with all possible interactions, it can not be properly introduced, the chain won't be added to the model and the user will be made aware of it if the verbose argument was requested.
 
@@ -262,7 +262,7 @@ However, after doing a superimposition, a possibel interference between the new 
 
 ## Weaknesses
 
-* The computational cost of our program increases linearly, so when working with big macro-complexes, the number of possible comparisons increases as the core structure of the macro-complex gets bigger and so does the computational time of the program.
+* The computational cost of our program increases with the amount of input files provided by the user, so when working with big macro-complexes, the number of possible comparisons increases as the core structure of the macro-complex gets bigger and so does the computational time of the program.
 
 * Our program is able to compute various protein-DNA interactions (if the input files contain both DNA chains) only when using a DNA template.
 
@@ -278,25 +278,25 @@ Another way to analyze the model is, in those cases where the complete structure
 
 With our examples, we decided to analyze the models both ways:
 
-* **1gzx**. This macrocomplex corresponds to the oxy T state of the hemoglobin, obtained when oxygen is bound to all four chains. The main stechiometry is A2B2, corresponding to the alpha and beta chains of the protein, however the chains in the example are presented as A, B, C, D. After running it through our program we obtained a perfect reconstruction, with an RMSD of 0.000 between the 146 pruned atom pairs. The DOPE score of the model is -71488.671875 and it has a good energy profile, as seen in Figures X and Y
-  ![Figure X. Energy profile of 1gzx model.](./images/DOPE_energy_1gzx.png "Figure X. Energy profile of 1gzx model.")
-  ![Figure Y. Chimera superimposition of 1gzx model with full structure.](./images/1gzxsuperimp.png "Figure Y. Chimera superimposition of 1gzx model with full structure.")
-* **6gmh**. This macrocomplex is the structure of an activated transcription complex Polymerase II. Its main stechiometry is a Hetero 20-mer, with 20 unique protein chains (with a global stechiometry of A1B1C1D1E1F1G1H1I1J1K1L1M1N1O1P1Q1R1S1T), and also 3 unique nucleic acid chains (2 DNA chains and 1 RNA), which are the chains that were available for our program. In this example it was also obtained an RMSD of 0.000 between the 1441 pruned atom pairs and a DOPE score of ... with a good profile as seen in Figures X and Y.
-  ![Figure X. Energy profile of 6gmh model.](./images/DOPE_energy_6gmh.png "Figure X. Energy profile of 6gmh model.")
-  ![Figure Y. Chimera superimposition of 6gmh model with full structure.](./images/6gmhsuperimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
-* **5nss**. This macrocomplex is the intermediate complex of the RNA polymerase-sigma54 holoenzyme with a promoter DNA and the transcription activator PspF. It's a hetero 12-mer with 6 unique nucleic protein chains (creating an A6B2C1D1E1F1 stechiometry) and 2 nucleic acid chains. It was obtained an RMSD of 0.000 between 1340 pruned atom pairs and a DOPE score of -408088.031250, with a profile as seen in the Figure below.
-  ![Figure X. Energy profile of the 5nss model.](./images/DOPE_energy_5nss.png "Figure X. Energy profile of 6gmh model.")
-  ![Figure Y. Chimera superimposition of the 5nss model with full structure.](./images/5nsssuperimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
-* **5fj8**. This macrocomplex is the yeast RNA polymerase III elongation complex. The global stechiometry is a Hetero 17-mer, containing 17 unique protein chains and 3 unique nucleic acid chains, one RNA and DNA molecules. The RSMD between the model and the complex is also 0.000 between 1422 pruned atoms pairs and the DOPE score -497916.468750, with the profile shown below in Figure Y.
-  ![Figure X. Energy profile of the 5fj8 model.](./images/DOPE_energy_5fj8.png "Figure X. Energy profile of 6gmh model.")
-  ![Figure Y. Chimera superimposition of the 5fj8 model with full structure.](./images/5fj8superimp.png "Figure Y. Chimera superimposition of 6gmh model with full structure.")
+* **1gzx**. This macrocomplex corresponds to the oxy T state of the hemoglobin, obtained when oxygen is bound to all four chains. The main stechiometry is A2B2, corresponding to the alpha and beta chains of the protein, however the chains in the example are presented as A, B, C, D. After running it through our program we obtained a perfect reconstruction, with an RMSD of 0.000 between the 146 pruned atom pairs. The DOPE score of the model is -71488.671875 and it has a good energy profile, as seen in Figures 2 and 3.
+  ![Figure 2. Energy profile of 1gzx model.](./images/DOPE_energy_1gzx.png "Figure 2. Energy profile of 1gzx model.")
+  ![Figure 3. Chimera superimposition of 1gzx model with full structure.](./images/1gzxsuperimp.png "Figure 3. Chimera superimposition of 1gzx model with full structure.")
+* **6gmh**. This macrocomplex is the structure of an activated transcription complex Polymerase II. Its main stechiometry is a Hetero 20-mer, with 20 unique protein chains (with a global stechiometry of A1B1C1D1E1F1G1H1I1J1K1L1M1N1O1P1Q1R1S1T), and also 3 unique nucleic acid chains (2 DNA chains and 1 RNA), which are the chains that were available for our program. In this example it was also obtained an RMSD of 0.000 between the 1441 pruned atom pairs and a DOPE score of ... with a good profile as seen in Figures 4 and 5.
+  ![Figure 4. Energy profile of 6gmh model.](./images/DOPE_energy_6gmh.png "Figure 4. Energy profile of 6gmh model.")
+  ![Figure 5. Chimera superimposition of 6gmh model with full structure.](./images/6gmhsuperimp.png "Figure 5. Chimera superimposition of 6gmh model with full structure.")
+* **5nss**. This macrocomplex is the intermediate complex of the RNA polymerase-sigma54 holoenzyme with a promoter DNA and the transcription activator PspF. It's a hetero 12-mer with 6 unique nucleic protein chains (creating an A6B2C1D1E1F1 stechiometry) and 2 nucleic acid chains. It was obtained an RMSD of 0.000 between 1340 pruned atom pairs and a DOPE score of -408088.031250, with a profile as seen in the Figures 6 and 7 below.
+  ![Figure 6. Energy profile of the 5nss model.](./images/DOPE_energy_5nss.png "Figure 6. Energy profile of 6gmh model.")
+  ![Figure 7. Chimera superimposition of the 5nss model with full structure.](./images/5nsssuperimp.png "Figure 7. Chimera superimposition of 6gmh model with full structure.")
+* **5fj8**. This macrocomplex is the yeast RNA polymerase III elongation complex. The global stechiometry is a Hetero 17-mer, containing 17 unique protein chains and 3 unique nucleic acid chains, one RNA and DNA molecules. The RSMD between the model and the complex is also 0.000 between 1422 pruned atoms pairs and the DOPE score -497916.468750, with the profile shown below in Figure 8.
+  ![Figure 8. Energy profile of the 5fj8 model.](./images/DOPE_energy_5fj8.png "Figure 8. Energy profile of 6gmh model.")
+  ![Figure 9. Chimera superimposition of the 5fj8 model with full structure.](./images/5fj8superimp.png "Figure 9. Chimera superimposition of 6gmh model with full structure.")
 * **2O61**. This macrocomplex is the crystal structure of NFkB, IRF7, IRF3 bound to the interferon-b enhancer. To build the complex, the files from the example provided in class were used. It was build using the stechiometry provided and also using as a template the interferon b enhancer DNA. 4 different models were build and the best model has a DOPE score of -85164.250000. Nevertheless, the model with the second best score (-83004.679688) has a better RMSD when compared with the PDB structure, with a value of 8.051 across all 546 atom pairs.
- In the Figure X and Y we can see the DOPE profile and the visualisation with Chimera for the model with the best score. Below we can see the second best model and its superimposition with the 2O61 structure taken from the PDB.
+In the Figure X and Y we can see the DOPE profile and the visualisation with Chimera for the model with the best score. Below we can see the second best model and its superimposition with the 2O61 structure taken from the PDB.
 
- ![Figure X. Energy profile of the 2O61 model.](./images/DOPE_energy_2O61.png "Figure X. Energy profile of 2O61 model.")
- ![Figure Y. Visualisation with Chimera of the model with best DOPE score for the 2O61 complex.](./images/2O61.png "Figure Y. Chimera visualisation of 2O61 model with full structure.")
- ![Figure Z. Visualisation with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.2.png "Figure Z. Chimera visualisation of 2O61 model with full structure.")
- ![Figure A. Superimposition with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61_superimposition.png "Figure A. Chimera superimposition of 2O61 model with full structure.")
+ ![Figure 10. Energy profile of the 2O61 model.](./images/DOPE_energy_2O61.png "Figure 10. Energy profile of 2O61 model.")
+ ![Figure 11. Visualisation with Chimera of the model with best DOPE score for the 2O61 complex.](./images/2O61.png "Figure 11. Chimera visualisation of 2O61 model with full structure.")
+ ![Figure 12. Visualisation with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.2.png "Figure 12. Chimera visualisation of 2O61 model with full structure.")
+ ![Figure 13. Superimposition with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61_superimposition.png "Figure 13. Chimera superimposition of 2O61 model with full structure.")
 
 
 # References
