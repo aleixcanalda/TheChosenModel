@@ -294,8 +294,6 @@ def superimpose(model, fixed_chain, moving_chain, apply_chain):
 
 def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechiometry=None):
 	""" Main function that adds all the chains to create the final model."""
-	if verbose:
-		print("Starting to build the model.")
 	if stechiometry != None:
 		stech_file, nomen_unique = parse_stech(nomen,stechiometry)
 		model = start_model(interactions_dict,verbose)
@@ -382,8 +380,6 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, output
 	""" Main function that adds all the chains to create the final model. This function takes into account a DNA template for DNA-prot interactions."""
 	print(interactions_dict)
 	id_set = set() #the way to start is the same as for the function "main_loop"
-	if verbose:
-		print("Starting to build the model with template.")
 	if stechiometry != None: 
 		stech_file, nomen_unique = parse_stech(nomen,stechiometry)
 		model = start_model(interactions_dict,verbose, template, output_path) 
