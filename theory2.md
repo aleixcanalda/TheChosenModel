@@ -132,7 +132,9 @@ As we can see above, the input has to be a directory containing only PDB files. 
 Example of input files for the protein macrocomplex 1GZX:
 
 P69905_P68871.1gzx_A_B.pdb
+&nbsp;
 P69905_P69905.1gzx_A_C.pdb
+&nbsp;
 P69905_P68871.1gzx_A_D.pdb
 
 For the DNA-protein interactions the structure is: protein.DNA.name_chain1_SenseAntisense.pdb(.gz). The protein is also an alphanumerical string that will be used to identify the stechiometry of the structure, then DNA to identify that it's a protein-DNA interaction and the name of the structure (name). Chain1 is the ID of the protein chain and it must coincide with the chain ID inside the file. SenseAntisense are the IDs of the two strands of DNA and they must coincide with the ID inside the file.
@@ -140,6 +142,7 @@ For the DNA-protein interactions the structure is: protein.DNA.name_chain1_Sense
 Example of input files for protein-DNA interactions (from the macro-complex 2O61):
 
 P05412.DNA.1t2k_C_EF.pdb
+&nbsp;
 Q04206.DNA.5u01_A_EF.pdb
 
 ### Stechiometry
