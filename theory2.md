@@ -127,17 +127,24 @@ These are all the arguments that can be introduced to our program:
 
 ### Input (mandatory argument)
 
-As we can see above, the input has to be a directory containing only PDB files. These files have to include two interacting chains from the model and the name of each file has to follow a set structure: chain1stechiometry_chain2stechiometry.name_chain1_chain2.pdb(.gz) where chain1stechiometry is an alphanumerical string that will be used to identify the stechiometry of the structure, the name is an alphanumerical string and the chains must coincide with the IDs of the chains inside the file. As it can be seen, the PDB files can either be compressed or not.
+As we can see above, the input has to be a directory containing only PDB files. These files have to include two interacting chains from the model and the name of each file has to follow a set structure. For protein-protein interactions the structure is: protein1_protein2.name_chain1_chain2.pdb(.gz) where protein1 is an alphanumerical string that will be used to identify the stechiometry of the structure, the name is an alphanumerical string (name of the complex) and the chains must coincide with the IDs of the chain IDs inside the file. As it can be seen, the PDB files can either be compressed or not.
 
-Example of input files for the protein macrocomplex 1gzx:
+Example of input files for the protein macrocomplex 1GZX:
 
 P69905_P68871.1gzx_A_B.pdb
 P69905_P69905.1gzx_A_C.pdb
 P69905_P68871.1gzx_A_D.pdb
 
+For the DNA-protein interactions the structure is: protein.DNA.name_chain1_SenseAntisense.pdb(.gz). The protein is also an alphanumerical string that will be used to identify the stechiometry of the structure, then DNA to identify that it's a protein-DNA interaction and the name of the structure (name). Chain1 is the ID of the protein chain and it must coincide with the chain ID inside the file. SenseAntisense are the IDs of the two strands of DNA and they must coincide with the ID inside the file.
+
+Example of input files for protein-DNA interactions (from the macro-complex 2O61):
+
+P05412.DNA.1t2k_C_EF.pdb
+Q04206.DNA.5u01_A_EF.pdb
+
 ### Stechiometry
 
-The stechiometry file must contain a line for each chain and its associated number, such as:
+The stechiometry is a .txt file that must contain a line for each protein using the same nomenclature used in the input files and it will indicate how many times the protein has to appear in the final model. Example of an stechiometry file:
 
 P69905:2
 
@@ -155,25 +162,29 @@ It is a mandatory argument when the model consists only of protein-DNA interacti
 
 ## Examples
 
-Our first example will be with the protein macro-complex 1gzx. The way to use the program in the terminal with this macrocomplex (available inside the examples folder), is as follows:
+Our first example will be with the protein macro-complex of the oxy T state of haemoglobin, with the PDB ID **1GZX**. This is a structure made with X-ray diffraction with a resolution of 2.10 Å. The structure was deposited by the authors in 2002 from their paper about the T state haemoglobin (Paoli et al., 1996).
+
+To create the complex running TheChosenModel in the terminal, the following code has to be executed:
+
 ```{.sh}
 
-TheChosenModel.py -i 1gzx/ -o 1gzx_results -f -v -e
+TheChosenModel.py -i home/examples/example1/1gzx/ -o home/examples/results/1gzx -f -v -e
 
 ```
-With this line what we are doing is giving as input (-i) the pair of chain interactions that will form the macro-complex 1gzx, the output folder where we want to store the results (-o), and if this folder already exists, we'll overwrite it (-f). Also, we will show on the terminal the different steps that the program is going through, to keep track, with the verbose argument (-v). And lastly, we will calculate the energies of the resulting model as well as its energy profile.
+With this line what we are doing is giving as input (-i) the path to a folder containing the pairs of chain interactions that will form the macro-complex 1GZX (correct naming structure explained in the input argument section), the path to the output folder where we want to store the results (-o) and, if this folder already exists, we'll overwrite it (-f). Also, we will show on the terminal the different steps that the program is going through, to keep track of the process, with the verbose argument (-v). And lastly, we will calculate the energies of the resulting model as well as its energy profile.
 
 The final result of the model can be seen in the Analysis section of this document.
 
-The other example we will show is of the macro-complex 2o61. This macro-complex is formed solely on dna-protein interactions, so it is necessary to add a template where the DNA can superimpose itself.
+The other example we will show is the macro-complex with a PDB ID **2O61**. This complex is the crystal structure, obtained with X-ray diffraction, of NFkB, IRF7 and IRF3 bound to the interferon-b enhancer. The resolution of the complex is 2.80 Å and it was deposited into the database in 2006 by the authors of a paper about the activation of the interferon beta (IFN-beta) gene. Its activation requires an assembly of an enhanceosome containing ATF-2/c-Jun, IRF-3/IRF-7, and NFkappaB. (Panne et al., 2007)
+
+This macro-complex is formed solely by DNA-protein interactions so, in order for the program to work, it is necessary to add a DNA template that will help with the superimposition process. The commands used to run the example are:
+
 ```{.sh}
 
-TheChosenModel.py -i 2o61/ -o 2o61_results -t template_file -m 2 -s stechiometry_file
+TheChosenModel.py -i home/examples/example2/2O61/ -o home/examples/results/2O61 -t home/examples/example2/template_file.pdb -m 4 -e -s home/examples/example2/stechiometry_file.txt
 
 ```
-With this line what we are doing is giving as input (-i) the pair of chain interactions that will form the macro-complex 1gzx, the output folder where we want to store the results (-o). Also, we will send the template ("template_file") for the dna (-t) and we will recieve two different models (-m 2). The program will also satisfy (or try to) the stechiometry that is described inside "stechiometry_file".
-
-The final result of the model can be seen in the Analysis section of this document.
+With this line what we are doing is first giving as input (-i) the folder containing the chain interactions that will form the macro-complex 2O61 and the output folder where we want to store the results (-o). Also, we will send the template ("template_file") for the DNA (-t), we will receive four different models (-m 4) and calculate the DOPE energy for each of them. Lastly, the path to an stechiometry file is provided (-s, required syntax for the stechiometry explained in the stechiometry argument section) and the program will try to satisfy it the best it can. The final result of this model can be seen in the Analysis section of this document.
 
 # Algorithm
 
