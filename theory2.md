@@ -281,8 +281,8 @@ With our examples, we decided to analyze the models both ways:
 
  ![Figure X. Energy profile of the 2O61 model.](./images/DOPE_energy_2O61.png "Figure X. Energy profile of 2O61 model.")
  ![Figure Y. Visualisation with Chimera of the model with best DOPE score for the 2O61 complex.](./images/2O61.png "Figure Y. Chimera visualisation of 2O61 model with full structure.")
- ![Figure Z. Visualisation with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.png "Figure Z. Chimera visualisation of 2O61 model with full structure.")
- ![Figure A. Superimposition with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.png "Figure A. Chimera superimposition of 2O61 model with full structure.")
+ ![Figure Z. Visualisation with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.2.png "Figure Z. Chimera visualisation of 2O61 model with full structure.")
+ ![Figure A. Superimposition with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61_superimposition.png "Figure A. Chimera superimposition of 2O61 model with full structure.")
 
 
 # References
