@@ -252,23 +252,23 @@ However, after doing a superimposition, a possibel interference between the new 
 
 * Our program is capable of fully forming protein macrocomplexes from an input of pairs of interacting chains in said macrocomplex.
 
-* It is capable of forming macrocomplexes that contain both protein-protein interactions and protein-dna interactions, as well as using RNA data.
+* It is capable of forming macrocomplexes that contain both protein-protein interactions and protein-DNA interactions, as well as using RNA data.
 
-* It is able to compute different models for both protein-protein and protein-dna interactions. 
+* It is able to compute multiple models for both protein-protein and protein-DNA interactions, in order to build different structures and increase the chance of obtaining a good model.
 
-* With the stechiometry input, the user decides if they want to limit the number of chains in a macrocomplex.
+* With the stechiometry input, the user decides if they want to limit the number of proteins in the macrocomplex or provide multiple structures of the same protein and build different models, in order to find the best possible solution.
 
-* Our program is able to calculate, if the user wishes, the DOPE energy of the protein and it gives an energy profile to see if the results are good, especially in those cases where RMSD calculation is not possible.
+* Our program is able to calculate, if the user so wishes, the DOPE energy of the protein and give an energy profile to analyze whether the results are good, especially in those cases where RMSD calculation is not possible due to an absence of a template to asses the quality.
 
 ## Weaknesses
 
 * The computational cost of our program increases linearly, so when working with big macro-complexes, the number of possible comparisons increases as the core structure of the macro-complex gets bigger and so does the computational time of the program.
 
-* Our program is able to compute various protein-dna interactions (if the input files contain both dna chains) only when using a dna template.
+* Our program is able to compute various protein-DNA interactions (if the input files contain both DNA chains) only when using a DNA template.
 
-* It is not able to compute macrocomplexes that have a series of protein-protein interactions and at the same time protein-dna interaction, but only when the input files contain both dna chains (in cases where the input files only have one dna chain, it is possible).
+* It not is able to compute macrocomplexes that have a series of protein-protein interactions and at the same time protein-DNA interactions, when the input files contain both DNA chains. If the input files are provided as in the case of protein-protein interactions (meaning that there are two files, one for protein1 interacting with one DNA strand and another for protein1 interacting with the complementary DNA strand), then it is possible to build the complex.
 
-* When various fragments of a chain are given, our program does not complete the chain, but chooses randomly one fragment. 
+* When various fragments of a chain are given, our program does not complete the chain, but chooses randomly one fragment.
 
 # Analysis
 
