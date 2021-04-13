@@ -345,6 +345,7 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 			for chainin in chain_in_model: #to see if the chain that we're looking at now interacts with the ones in the model, we'll create a new loop
 				if chain in chain_in_model:
 					break
+				random.shuffle(interactions_dict[chainin]) #we will pick randomly a chain that interacts with the chain in the model
 				for chain_model, chain_interact in interactions_dict[chainin]: #if our chain interacts with a chain inside the complex
 
 					if chain_interact.id == chain:
