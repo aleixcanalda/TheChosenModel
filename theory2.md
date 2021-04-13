@@ -301,6 +301,10 @@ With our examples, we decided to analyze the models both ways:
 
 # References
 
+Paoli M, Liddington R, Tame J, Wilkinson A, Dodson G. Crystal structure of T state haemoglobin with oxygen bound at all four haems. J Mol Biol. 1996 Mar 8;256(4):775-92. doi: 10.1006/jmbi.1996.0124.
+
+Panne D, Maniatis T, Harrison SC. An atomic model of the interferon-beta enhanceosome. Cell. 2007 Jun 15;129(6):1111-23. doi: 10.1016/j.cell.2007.05.019.
+
 Narayanan Eswar, C. Ramakrishnan, Deterministic features of side-chain main-chain hydrogen bonds in globular protein structures, Protein Engineering, Design and Selection, Volume 13, Issue 4, April 2000, Pages 227–238.
 
 Batsanov S.S.; Van der Waals Raddi of Elements, Inorganic Materials, 2001.
