@@ -17,8 +17,12 @@ n = 0
 filenames = []
 while n < int(options.models):
 	if options.template is not None:
+		if options.verbose:
+			print("Starting the construction of model %s"%s(n))
 		model = template_loop(chain_list, int_dict, nomen, options.template, options.output_directory, options.verbose, options. stechiometry)
 	else:
+		if options.verbose:
+			print("Starting the construction of model %s"%s(n))
 		model = main_loop(chain_list, int_dict, nomen, options.verbose, options. stechiometry)
 	filename = save_PDB(model, options.output_directory, n+1, options.verbose)
 	filenames.append(filename)
