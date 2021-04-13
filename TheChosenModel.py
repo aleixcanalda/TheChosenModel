@@ -13,17 +13,16 @@ chain_list, nomen = all_chains(prots_files, options.verbose)
 
 int_dict = get_interactions_dict(chain_list, prots_files, options.verbose, options.template)
 
-if options.template is not None:
-	n = 0
-	filenames = []
-	while n < int(options.models):
+n = 0
+filenames = []
+while n < int(options.models):
+	if options.template is not None:
 		model = template_loop(chain_list, int_dict, nomen, options.template, options.output_directory, options.verbose, options. stechiometry)
-		filename = save_PDB(model, options.output_directory, n+1, options.verbose)
-		filenames.append(filename)
-		n += 1
-else:
-	model = main_loop(chain_list, int_dict, nomen, options.verbose, options. stechiometry)
-	filename = save_PDB(model, options.output_directory, 1, options.verbose)
+	else:
+		model = main_loop(chain_list, int_dict, nomen, options.verbose, options. stechiometry)
+	filename = save_PDB(model, options.output_directory, n+1, options.verbose)
+	filenames.append(filename)
+	n += 1
 
 if options.energy:
 	for file in filenames:
