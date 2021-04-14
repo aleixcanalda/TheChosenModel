@@ -1,6 +1,49 @@
-**TheChosenModel**
-=================
-*by* CANALDA BALTRONS, Aleix and DÍAZ ROS, Maria
+---
+### BEGIN-Of-YAML-Block ###
+#
+## ######################################################################################
+##
+##   README.md
+##
+##     A LaTeX-extended MarkDown template for MScBI-ALG.
+##
+## ######################################################################################
+##
+##                 CopyLeft 2020 (CC:BY-NC-SA) --- Josep F Abril
+##
+##   This file should be considered under the Creative Commons BY-NC-SA License
+##   (Attribution-Noncommercial-ShareAlike). The material is provided "AS IS", 
+##   mainly for teaching purposes, and is distributed in the hope that it will
+##   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+##   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+##
+## ######################################################################################
+#
+# title-meta is title string without any LaTeX format to be used as pdftitle, part of emails subject...
+title-meta: Macro-complex structure modeller
+#
+# title is the big title for the cover page, fully LaTeX formated to fit into a shortstack command...
+title: |
+  \textsc{Macro-complex structure modeller}
+#subtitle:
+#
+# runtitle is the running header or footer, used i.e. by fancyheadings...
+runtitle: |
+  Macro-complex structure modeller
+#
+# author-meta sets the pdfauthor variable...
+author-meta: !!str 'Aleix Canalda, Maria Díaz'
+#
+# authors to appear on the title page...
+author:
+- name: Aleix Canalda Baltrons
+author:
+- name: Maria Díaz Ros
+#
+# authorshort defines a brief list of authors, i.e. for headings
+authorshort: YOURSURNAME, YOURNAMEshort
+#
+### end-Of-YAML-Block ###
 ---
 
 # Introduction
@@ -183,15 +226,15 @@ This section is a discussion about the efficiency of the program and its cost. T
 
 # Biological background
 
-In the last years there has been an exponential increase in the amount of proteins being sequenced. It is known that the function of a protein can be discovered thanks to its structure, hence the modeling of proteins has become a major challenge in the field. Moreover, proteins often tend to form networks of physical interactions with other biomolecules, such as other proteins, DNA or RNA. Therefore, to assess more accurately the function of a certain protein, it is necessary to discover its interactions (Fornes et al., 2014). PPIs (Protein-Protein Interactions) consist of physical contacts between proteins that occur in a cell or a living being, so they don't include other relationships with an absence of physical contact or generic contact produced by production or degradation. The complete set of interactions that a living being has it's the interactome and it can be a measure of how complex an organism is (Garcia-Garcia et al., 2012).
+In the last years there has been an exponential increase in the amount of proteins being sequenced. It is known that the function of a protein can be discovered thanks to its structure, hence the modeling of proteins has become a major challenge in the field. Moreover, proteins often tend to form networks of physical interactions with other biomolecules, such as other proteins, DNA or RNA. Therefore, to assess more accurately the function of a certain protein, it is necessary to discover its interactions (Fornes et al., 2014). PPIs (Protein-Protein Interactions) consist of physical contacts between proteins that occur in a cell or a living being, so they don't include other relationships with an absence of physical contact or generic contact produced by production or degradation. The complete set of interactions that a living being has is the interactome and it can be a measure of how complex an organism is (Garcia-Garcia et al., 2012).
 
 To fully understand how protein interactions occur, it's not enough to know the biomolecules involved in the process, the high-resolution molecular/atomic details are also needed. However, the number of proteins with a known structure in the Protein Data Bank (PDB) is very low in comparison to the number of discovered sequences and it's even lower for protein complexes (Mosca et al., 2014). This imbalance has prompted the development of strategies to model the structure of proteins and its interactions. There are a good amount of methods that can detect PPIs and they provide different amounts of detail. The methods can be classified between low or high-throughput methods and between experimental (Yeast Two Hybrid, X-ray crystallography or NMR spectroscopy) and computational (such as comparative modeling or docking) (Garcia-Garcia et al., 2012).
 
-Computational methods to predict PPIs use experimental data to predict new PPIs and there are several different approaches. The interactions can be modeled using template complexes of homologs, by assuming that the homologs of interacting proteins also interact in a similar fashion. However, the conservation the of the interaction would depend on the conservation of the interface between the interacting biomolecules, although in general it has been shown that residues at the interface tend to be structurally conserved (Espadaler et al., 2005). Sometimes, they can also be built superimposing the models of unbound partners over a template complex. Another strategy would be docking the structure of one of the two proteins onto the other (Fornes et al., 2014).
+Computational methods to predict PPIs use experimental data to predict new PPIs and there are several different approaches. The interactions can be modeled using template complexes of homologs, by assuming that the homologs of interacting proteins also interact in a similar fashion. However, the conservation of the interaction would depend on the conservation of the interface between the interacting biomolecules, although in general it has been shown that residues at the interface tend to be structurally conserved (Espadaler et al., 2005). Sometimes, they can also be built superimposing the models of unbound partners over a template complex. Another strategy would be docking the structure of one of the two proteins onto the other (Fornes et al., 2014).
 
 ## Macrocomplexes
 
-As it was explained, proteins interact with each other and hydrophobicity, hydrogen bonds and van der Waals forces play an important role in role in the determination of the structure (Chanphai et al., 2015). It has been determined that the limits used for detecting hydrogen bonds are between 2.4 and 3.5 Armstrongs (Eswar et al., 2000). Thus in the program TheChosenModel, the proteins were deemed as interacting when the distance between the atoms of the two chains was 3.5 A or less, regardless of the existence of a file containing both proteins (in order to detect the interacting chains for all the complex, not only the interactions given as an input).
+As it was explained, proteins interact with each other and hydrophobicity, hydrogen bonds and van der Waals forces play an important role in role in the determination of the structure (Chanphai et al., 2015). It has been determined that the limits used for detecting hydrogen bonds are between 2.4 and 3.5 Armstrongs (Eswar et al., 2000). Thus in the program TheChosenModel, the proteins were deemed as interacting when the distance between the atoms of the two chains was 3.5 A or less, to make sure that the interactions given as input were correct.
 
 ## Superimposition
 
@@ -215,11 +258,7 @@ The native structure has the lowest energy of all possible structures in native 
 
 Tanaka and Scheraga (1976) managed to relate the frequencies of contact between different residue types, obtained from known native structures, to the free energies of corresponding interactions using the simple relationship between free energy and the equilibrium constant. Then, using the probability theory, an atomic distance-dependent statistical potential can be calculated from a sample of native structures that does not depend on any adjustable parameters (Discrete Optimized Protein Energy, DOPE). DOPE is based on an improved reference state that corresponds to noninteracting atoms in a homogeneous sphere with the radius dependent on a sample native structure.
 
-The DOPE assessment method of the program gives as output a DOPE profile that can be inputed into a graphical program to create a plot for the profile. This plot has in the X axis the position of each residue and in the Y axis the DOPE score per residue. Laslty, it has to be taken into account that the score is unnormalized with respect to the protein size and has an arbitrary scale, therefore scores from different proteins cannot be compared directly.
-
-# Asessment of the program
-
-In this section there will be a global assessments of the strengths and weaknesses of TheChosenModel.
+The DOPE assessment method of the program gives as output a DOPE profile that can be inputed into a graphical program to create a plot for the profile. This plot has in the X axis the position of each residue and in the Y axis the DOPE score per residue. Lastly, it has to be taken into account that the score is unnormalized with respect to the protein size and has an arbitrary scale, therefore scores from different proteins cannot be compared directly.
 
 ## Strengths
 
@@ -294,3 +333,23 @@ Wu D, Wu Z. Superimposition of protein structures with dynamically weighted RMSD
 Ramachandran S, Kota P, Ding F, Dokholyan NV. Automated minimization of steric clashes in protein structures. Proteins. 2011 Jan;79(1):261-70. doi: 10.1002/prot.22879.
 
 Batsanov, S.S. Van der Waals Radii of Elements. Inorganic Materials. 2001;37:871–885. doi: 10.1023/A:1011625728803
+
+```{.sh .numberlines startFrom="100"}
+# 
+pandoc -f $PDOCFLGS                          \
+       --template=./template/readme.tex      \
+       -t latex --natbib --listings          \
+       --number-sections                     \
+       --variable papersize:a4paper          \
+       --variable toc=true                   \
+       --variable lof=true                   \
+       --variable lot=true                   \
+       --variable geometry:margin=1.5cm      \
+       --variable fontsize=10pt              \
+       -o $RF.tex $RF.md;                    \
+pdflatex $RF.tex; bibtex $RF; pdflatex $RF.tex;  pdflatex $RF.tex;
+#
+# --highlight-style pygments
+# --highlight-style tango
+# ...
+```
