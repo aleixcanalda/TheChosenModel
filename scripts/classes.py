@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 from Bio.PDB.Structure import Structure
 from Bio.PDB.Model import Model
 from Bio.PDB.Chain import Chain
