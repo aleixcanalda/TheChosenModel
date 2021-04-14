@@ -5,6 +5,5 @@ setup(name='TheChosenModel',
         author='Aleix Canalda Baltrons & Maria Díaz Ros',
         author_email=['aleix.canalda01@estudiant.upf.edu', 'maria.diaz07@estudiant.upf.edu'],
         install_requires=['biopython>=1.73'],
-        scripts=['scripts/TheChosenModel.py'],
         packages=['scripts']
         )
