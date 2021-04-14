@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 from classes import *
 from Bio.PDB.PDBParser import PDBParser
