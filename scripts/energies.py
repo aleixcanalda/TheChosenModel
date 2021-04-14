@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 from modeller import *
 from modeller.scripts import complete_pdb
 import pylab
