@@ -1,49 +1,6 @@
----
-### BEGIN-Of-YAML-Block ###
-#
-## ######################################################################################
-##
-##   README.md
-##
-##     A LaTeX-extended MarkDown template for MScBI-ALG.
-##
-## ######################################################################################
-##
-##                 CopyLeft 2020 (CC:BY-NC-SA) --- Josep F Abril
-##
-##   This file should be considered under the Creative Commons BY-NC-SA License
-##   (Attribution-Noncommercial-ShareAlike). The material is provided "AS IS", 
-##   mainly for teaching purposes, and is distributed in the hope that it will
-##   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-##   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-##
-## ######################################################################################
-#
-# title-meta is title string without any LaTeX format to be used as pdftitle, part of emails subject...
-title-meta: Macro-complex structure modeller
-#
-# title is the big title for the cover page, fully LaTeX formated to fit into a shortstack command...
-title: |
-  \textsc{Macro-complex structure modeller}
-#subtitle:
-#
-# runtitle is the running header or footer, used i.e. by fancyheadings...
-runtitle: |
-  Macro-complex structure modeller
-#
-# author-meta sets the pdfauthor variable...
-author-meta: !!str 'Aleix Canalda, Maria Díaz'
-#
-# authors to appear on the title page...
-author:
-- name: Aleix Canalda Baltrons
-author:
-- name: Maria Díaz Ros
-#
-# authorshort defines a brief list of authors, i.e. for headings
-authorshort: YOURSURNAME, YOURNAMEshort
-#
-### end-Of-YAML-Block ###
+**TheChosenModel**
+=================
+*by* CANALDA BALTRONS, Aleix and DÍAZ ROS, Maria
 ---
 
 # Introduction
@@ -260,6 +217,10 @@ Tanaka and Scheraga (1976) managed to relate the frequencies of contact between 
 
 The DOPE assessment method of the program gives as output a DOPE profile that can be inputed into a graphical program to create a plot for the profile. This plot has in the X axis the position of each residue and in the Y axis the DOPE score per residue. Laslty, it has to be taken into account that the score is unnormalized with respect to the protein size and has an arbitrary scale, therefore scores from different proteins cannot be compared directly.
 
+# Asessment of the program
+
+In this section there will be a global assessments of the strengths and weaknesses of TheChosenModel.
+
 ## Strengths
 
 * Our program is capable of fully forming protein macrocomplexes from an input of pairs of interacting chains in said macrocomplex.
@@ -333,23 +294,3 @@ Wu D, Wu Z. Superimposition of protein structures with dynamically weighted RMSD
 Ramachandran S, Kota P, Ding F, Dokholyan NV. Automated minimization of steric clashes in protein structures. Proteins. 2011 Jan;79(1):261-70. doi: 10.1002/prot.22879.
 
 Batsanov, S.S. Van der Waals Radii of Elements. Inorganic Materials. 2001;37:871–885. doi: 10.1023/A:1011625728803
-
-```{.sh .numberlines startFrom="100"}
-# 
-pandoc -f $PDOCFLGS                          \
-       --template=./template/readme.tex      \
-       -t latex --natbib --listings          \
-       --number-sections                     \
-       --variable papersize:a4paper          \
-       --variable toc=true                   \
-       --variable lof=true                   \
-       --variable lot=true                   \
-       --variable geometry:margin=1.5cm      \
-       --variable fontsize=10pt              \
-       -o $RF.tex $RF.md;                    \
-pdflatex $RF.tex; bibtex $RF; pdflatex $RF.tex;  pdflatex $RF.tex;
-#
-# --highlight-style pygments
-# --highlight-style tango
-# ...
-```
