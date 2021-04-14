@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 from IOinterface import *
 from classes import *
 from build_complex4 import *
