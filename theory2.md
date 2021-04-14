@@ -291,10 +291,9 @@ With our examples, we decided to analyze the models both ways:
   ![Figure 8. Energy profile of the 5fj8 model.](./images/DOPE_energy_5fj8.png "Figure 8. Energy profile of 6gmh model.")
   ![Figure 9. Chimera superimposition of the 5fj8 model with full structure.](./images/5fj8superimp.png "Figure 9. Chimera superimposition of 6gmh model with full structure.")
 * **2O61**. This macrocomplex is the crystal structure of NFkB, IRF7, IRF3 bound to the interferon-b enhancer. To build the complex, the files from the example provided in class were used. It was build using the stechiometry provided and also using as a template the interferon b enhancer DNA. 4 different models were build and the best model has a DOPE score of -85164.250000. Nevertheless, the model with the second best score (-83004.679688) has a better RMSD when compared with the PDB structure, with a value of 8.051 across all 546 atom pairs.
-In the Figure X and Y we can see the DOPE profile and the visualisation with Chimera for the model with the best score. Below we can see the second best model and its superimposition with the 2O61 structure taken from the PDB (in blue our model and in light brown the template.
+In the Figure X and Y we can see the DOPE profile and the visualisation with Chimera for the second best model and its superimposition with the 2O61 structure taken from the PDB (in blue our model and in light brown the template.
 
- ![Figure 10. Energy profile of the 2O61 model.](./images/DOPE_energy_2O61.png "Figure 10. Energy profile of 2O61 model.")
- ![Figure 11. Visualisation with Chimera of the model with best DOPE score for the 2O61 complex.](./images/2O61.png "Figure 11. Chimera visualisation of 2O61 model with full structure.")
+ ![Figure 10. Energy profile of the best fit for the 2O61 complex.](./images/DOPE_energy_2O61.png "Figure 10. Energy profile of 2O61 model.")
  ![Figure 12. Visualisation with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61.2.png "Figure 12. Chimera visualisation of 2O61 model with full structure.")
  ![Figure 13. Superimposition with Chimera of the model with the best fit for the 2O61 complex.](./images/2O61_superimposition.png "Figure 13. Chimera superimposition of 2O61 model with full structure.")
 
