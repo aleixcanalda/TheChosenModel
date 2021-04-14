@@ -244,7 +244,9 @@ To do a superimposition it's necessary to have two lists of atoms of the same le
 
 The rotation of the moving list is done in such a way that the RMSD between the pairs of atoms of the two lists is minimized. This rotation that the moving atoms have to do is encoded in a translation matrix that will be applied to chain C. The interaction between A and C is known and also the interaction between A and B, so when the translation matrix is applied to C, it will rotate the exact way that the chain A had to rotate to superimpose with the chain A of the model, therefore, chain C will be fitted into the model.
 
-However, after doing a superimposition, a possible interference between the new chain and the already created model/structure has to be taken into account. If the atoms between two different chains are closer than a normal interacting distance (as we established in the macrocomplexes section), it's considered a clash. A clash is defined as an unnatural overlap of any two non-bonding atoms in a protein structure and it has to be removed (Ramachandran et al., 2011).
+## Clashes
+
+After doing a superimposition, a possible interference between the new chain and the already created model/structure has to be taken into account. If the atoms between two different chains are closer than a normal interacting distance (as we established in the macrocomplexes section), it's considered a clash. A clash is defined as an unnatural overlap of any two non-bonding atoms in a protein structure and it has to be removed (Ramachandran et al., 2011).
 
 To calculate if a clash is produced, the model obtains the atoms corresponding to the backbone of the structure. In the case of proteins, it uses the CA carbons (alpha carbons) and in the case of DNA it uses the C1 carbons. If the backbone atoms are in contact with each other at a distance of less than 2 A and these clashes represent more than 5% of the structure it is considered a significant clash and the program will handle the situation (Batsanov, 2001).
 
