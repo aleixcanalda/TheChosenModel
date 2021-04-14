@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from modeller import *
 from modeller.scripts import complete_pdb
 import pylab
