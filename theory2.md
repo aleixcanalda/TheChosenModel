@@ -226,27 +226,37 @@ This section is a discussion about the efficiency of the program and its cost. T
 
 # Biological background
 
-Obtaining the structure of a protein has been done for some years now through experimental procedures such as X-ray crystallography, NMR spectroscopy and electron microscopy. This has enabled to create a Protein Database (PDB) where many protein structures are stored. Thanks to this we can advance in the field of Structural Bioinformatics and obtain for example information on pairs of interacting chains of a macrocomplex which would allow us to create macrocomplex structures, which is exactly what this program is about. These macrocomplex structures are also known as the quaternary structure, where tertiary structures interact with each other to form a larger structure.
+In the last years there has been an exponential increase in the amount of proteins being sequenced. It is known that the function of a protein can be discovered thanks to its structure, hence the modeling of proteins has become a major challenge in the field. Moreover, proteins often tend to form networks of physical interactions with other biomolecules, such as other proteins, DNA or RNA. Therefore, to assess more accurately the function of a certain protein, it is necessary to discover its interactions (Fornes et al., 2014). PPIs (Protein-Protein Interactions) consist of physical contacts between proteins that occur in a cell or a living being, so they don't include other relationships with an absence of physical contact or generic contact produced by production or degradation. The complete set of interactions that a living being has it's the interactome and it can be a measure of how complex an organism is (Garcia-Garcia et al., 2012).
 
-It should also be noted that it isn't as easy to obtain the structures for all proteins. For example, transmembrane proteins are harder than soluble proteins, which means that in the PDB there is a certain bias on the different proteins that we can find there. Furthermore, it is also very expensive and time-consuming to obtain PPIs.That is why being able to predict certain interactions with a program like ours can be important to help fill this gap of knowledge.
+To fully understand how protein interactions occur, it's not enough to know the biomolecules involved in the process, the high-resolution molecular/atomic details are also needed. However, the number of proteins with a known structure in the Protein Data Bank (PDB) is very low in comparison to the number of discovered sequences and it's even lower for protein complexes (Mosca et al., 2014). This imbalance has prompted the development of strategies to model the structure of proteins and its interactions. There are a good amount of methods that can detect PPIs and they provide different amounts of detail. The methods can be classified between low or high-throughput methods and between experimental (Yeast Two Hybrid, X-ray crystallography or NMR spectroscopy) and computational (such as comparative modeling or docking) (Garcia-Garcia et al., 2012).
 
-Examples of interacting forces would be hydrogen bonds, disulfide bonds but also Van der Waals forces or electrostatic forces. Examples of macrocomplexes that present these interactions would be hemoglobin, enhanceosome DNA-Protein interactions, receptors located at the membrane, etc.
+Computational methods to predict PPIs use experimental data to predict new PPIs and there are several different approaches. The interactions can be modeled using template complexes of homologs, by assuming that the homologs of interacting proteins also interact in a similar fashion. However, the conservation the of the interaction would depend on the conservation of the interface between the interacting biomolecules, although in general it has been shown that residues at the interface tend to be structurally conserved (Espadaler et al., 2005). Sometimes, they can also be built superimposing the models of unbound partners over a template complex. Another strategy would be docking the structure of one of the two proteins onto the other (Fornes et al., 2014).
 
-Here, we will talk about the biological background that the program needed in order to be developed. 
+## Macrocomplexes
 
-## Macrocomplexes 
-
-When talking about proteins, we know that most don't interact on their own, they form macrocomplexes. The chains usually interact in a way that they keep the hydrophobic residues together and expose the rest of residues to the solvent in order to obtain a more favourable structure. When taking this into account, we know that chains aren't in space on their own, they interact with each other in order to form the whole structure. For this reason, in our program we determined whether two chains were interacting or not, without taking into account if they had a joint pdb file, in order to detect all interacting chains for the whole complex, without the need to have many pdb files. We determined that two chains were interacting if they formed hydrogen bonds, which would mean that their atoms are at a length of 3.5 A or less (Narayan et al., 2000).Therefore, by knowing the pairs of interactions among them in space, we can reconstruct the whole stucture. Knowing the structures of these macrocomplexes will further our knowledge of protein-protein interactions (PPIs) and the biochemical functions they partake. 
+As it was explained, proteins interact with each other and hydrophobicity, hydrogen bonds and van der Waals forces play an important role in role in the determination of the structure (Chanphai et al., 2015). It has been determined that the limits used for detecting hydrogen bonds are between 2.4 and 3.5 Armstrongs (Eswar et al., 2000). Thus in the program TheChosenModel, the proteins were deemed as interacting when the distance between the atoms of the two chains was 3.5 A or less, regardless of the existence of a file containing both proteins (in order to detect the interacting chains for all the complex, not only the interactions given as an input).
 
 ## Superimposition
 
-As it was explained before, a superimposition is done when a pair of identical chains are superimposed, resulting in the addition of another chain to the model. Following the example in the previous section, the model could include the chains A-B and it currently has to add the A-C interaction.
+As it was explained in the Algorithm section, a superimposition is done when a group of structures is translated and rotated so that the square root of the sum of squares of coordinate differences of the atoms in the structures (RMSD, root-mean-square deviation) is minimized (Wu et al., 2010).  This finally results in the addition of another protein to the building model. Following the example in the previous section (Figure 1), the model could include the chains A-B and it currently has to add the A-C interaction.
 
-To do a superimposition it's necessary to have two lists of atoms of the same length (in the current example, two chains A). One will be a fixed list of atoms and the other is the one that will be moving. It's also necessary to stress the importance of having the same length in both lists of atoms, because the function will move each atom of the moving list towards the pair atoms of the fixed list, therefore, the number of atoms must be the same.
+To do a superimposition it's necessary to have two lists of atoms of the same length (in the current example, two chains A). One will be a fixed list of atoms and the other is the one that will be moving. It's also necessary to stress the importance of having the same length in both lists, because the function will move each atom of the moving list towards the pair atom of the fixed list, therefore, the number of atoms must be the same.
 
-The rotation of the moving list is done in such a way that the RMSD (Root Mean Square Deviation) between the pairs of atoms of the two lists is minimized. This rotation that the moving atoms have is encoded in a translation matrix that will be applied to chain C. The interaction between A and C is known and also the interaction between A and B, so when the translation matrix is applied to C, it will rotate the exact way that the chain A had to rotate to superimpose with the chain A of the model, therefore, chain C will be fitted into the model.
+The rotation of the moving list is done in such a way that the RMSD between the pairs of atoms of the two lists is minimized. This rotation that the moving atoms have to do is encoded in a translation matrix that will be applied to chain C. The interaction between A and C is known and also the interaction between A and B, so when the translation matrix is applied to C, it will rotate the exact way that the chain A had to rotate to superimpose with the chain A of the model, therefore, chain C will be fitted into the model.
 
-However, after doing a superimposition, a possibel interference between the new chain and the already created model/structure has to be taken into account. If the atoms between two different chains are closer than a normal interacting distance (around 3-3.5 A), it's considered a clash. To calculate the clashes, the model obtains the atoms corresponding to the backbone of the structure. In the case of proteins, it uses the CA carbon (alpha carbon) and in the case of DNA it uses the C1 carbon. If the backbone atoms are in contact with each other at a distance of less than 2 A and if these clashes happen in more than 5% of the structure (Batsanov, 2001).
+However, after doing a superimposition, a possible interference between the new chain and the already created model/structure has to be taken into account. If the atoms between two different chains are closer than a normal interacting distance (as we established in the macrocomplexes section), it's considered a clash. A clash is defined as an unnatural overlap of any two non-bonding atoms in a protein structure and it has to be removed (Ramachandran et al., 2011).
+
+To calculate if a clash is produced, the model obtains the atoms corresponding to the backbone of the structure. In the case of proteins, it uses the CA carbons (alpha carbons) and in the case of DNA it uses the C1 carbons. If the backbone atoms are in contact with each other at a distance of less than 2 A and these clashes represent more than 5% of the structure it is considered a significant clash and the program will handle the situation (Batsanov, 2001).
+
+## DOPE
+
+After obtaining several models for a protein macrocomplex, it is vital to estimate the quality of the predictions to be able to assess if the model has the correct fold, if there are errors in a certain part of the structure and also to determine the best model produced (Fornes et al., 2014).
+
+The native structure has the lowest energy of all possible structures in native conditions, hence a function to predict accurately the free energy would enable the analysis of the models. Unfortunately, this is not possible and the solution is to develop a score function whose global minimum also corresponds to the native structure of the protein. This scoring function is also called knowledge-based or statistical potential due to its dependence on known protein structures.
+
+Tanaka and Scheraga (1976) managed to relate the frequencies of contact between different residue types, obtained from known native structures, to the free energies of corresponding interactions using the simple relationship between free energy and the equilibrium constant. Then, using the probability theory, an atomic distance-dependent statistical potential can be calculated from a sample of native structures that does not depend on any adjustable parameters (Discrete Optimized Protein Energy, DOPE). DOPE is based on an improved reference state that corresponds to noninteracting atoms in a homogeneous sphere with the radius dependent on a sample native structure.
+
+The DOPE assessment method of the program gives as output a DOPE profile that can be inputed into a graphical program to create a plot for the profile. This plot has in the X axis the position of each residue and in the Y axis the DOPE score per residue. Laslty, it has to be taken into account that the score is unnormalized with respect to the protein size and has an arbitrary scale, therefore scores from different proteins cannot be compared directly.
 
 ## Strengths
 
@@ -304,9 +314,23 @@ Paoli M, Liddington R, Tame J, Wilkinson A, Dodson G. Crystal structure of T sta
 
 Panne D, Maniatis T, Harrison SC. An atomic model of the interferon-beta enhanceosome. Cell. 2007 Jun 15;129(6):1111-23. doi: 10.1016/j.cell.2007.05.019.
 
-Narayanan Eswar, C. Ramakrishnan, Deterministic features of side-chain main-chain hydrogen bonds in globular protein structures, Protein Engineering, Design and Selection, Volume 13, Issue 4, April 2000, Pages 227–238.
+Fornes O, Garcia-Garcia J, Bonet J, Oliva B. On the use of knowledge-based potentials for the evaluation of models of protein-protein, protein-DNA, and protein-RNA interactions. Adv Protein Chem Struct Biol. 2014;94:77-120. doi: 10.1016/B978-0-12-800168-4.00004-4.
 
-Batsanov S.S.; Van der Waals Raddi of Elements, Inorganic Materials, 2001.
+Mosca R, Céol A, Stein A, Olivella R, Aloy P. 3did: a catalog of domain-based interactions of known three-dimensional structure. Nucleic Acids Research. 2014;42:D374-D379. doi: 10.1093/nar/gkt887
+
+Garcia-Garcia J, Bonet J, Guney E, Fornes O, Planas J,Oliva B. Networks of ProteinProtein Interactions: From Uncertainty to Molecular Details. Mol Inf. 2012;31:342-362. doi: 10.1002/minf.201200005
+
+Espadaler J, Romero-Isart O, Jackson RM, Oliva B. Prediction of protein–protein interactions using distant conservation of sequence patterns and structure relationships. Bioinformatics. 2005;21:3360-3368. doi: 10.1093/bioinformatics/bti522
+
+P. Chanphai, L. Bekale, H.A. Tajmir-Riahi. Effect of hydrophobicity on protein–protein interactions. European Polymer Journal. 2015;67:224-231. doi: /10.1016/j.eurpolymj.2015.03.069.
+
+Eswar N, Ramakrishnan C. Deterministic features of side-chain main-chain hydrogen bonds in globular protein structures. Protein Engineering, Design and Selection. 2000;13:227–238. doi: 10.1093/protein/13.4.227
+
+Wu D, Wu Z. Superimposition of protein structures with dynamically weighted RMSD. J Mol Model. 2010 Feb;16(2):211-22. doi: 10.1007/s00894-009-0538-6.
+
+Ramachandran S, Kota P, Ding F, Dokholyan NV. Automated minimization of steric clashes in protein structures. Proteins. 2011 Jan;79(1):261-70. doi: 10.1002/prot.22879.
+
+Batsanov, S.S. Van der Waals Radii of Elements. Inorganic Materials. 2001;37:871–885. doi: 10.1023/A:1011625728803
 
 ```{.sh .numberlines startFrom="100"}
 # 
