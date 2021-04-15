@@ -20,11 +20,11 @@ filenames = []
 while n < int(options.models):
 	if options.template is not None:
 		if options.verbose:
-			print("Starting the construction of model %s"%n)
+			print("Starting the construction of model %s"%(n+1))
 		model = template_loop(chain_list, int_dict, nomen, options.template, options.output_directory, options.verbose, options. stechiometry)
 	else:
 		if options.verbose:
-			print("Starting the construction of model %s"%n)
+			print("Starting the construction of model %s"%(n+1))
 		model = main_loop(chain_list, int_dict, nomen, options.verbose, options. stechiometry)
 	filename = save_PDB(model, options.output_directory, n+1, options.verbose)
 	filenames.append(filename)
@@ -32,4 +32,6 @@ while n < int(options.models):
 
 if options.energy:
 	for file in filenames:
+		if options.verbose:
+			print("Calculating DOPE score of %s"%file)
 		energy = DOPE_Energy(file, options.output_directory, options.verbose)
