@@ -105,50 +105,6 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 				else:
 					interactions_dict[chain1.id] = [[chain1, chain2]]
 
-		elif  len(pair) == 3 and template == None:
-
-			chain1 = pair[0]
-			chain2 = pair[1]
-			chain3 = pair[2]
-
-			interact_1, interact_2 = chain1.interactions(chain2)
-			if interact_1 == set() and interact_2 == set():
-				continue
-
-			if interactions_dict == {}:
-				interactions_dict[chain1.id]= [[chain1, chain2],[chain1,chain3]]
-				interactions_dict[chain2.id]= [[chain2, chain1],[chain2,chain3]]
-				interactions_dict[chain3.id]= [[chain3, chain1],[chain3,chain2]]
-
-			else:
-
-				checking1 = False
-				checking2 = False
-				checking3 = False
-				for key in interactions_dict.keys():
-					check1 = chain1.compare_sequence(interactions_dict[key][0][0])
-					if check1 == 2 or chain1.id == key:
-						interactions_dict[key].append([chain1, chain2])
-						interactions_dict[key].append([chain1, chain3])
-						checking1 = True
-					check2 = chain2.compare_sequence(interactions_dict[key][0][0])
-					if check2 == 2 or chain2.id == key:
-						interactions_dict[key].append([chain2, chain1])
-						interactions_dict[key].append([chain2, chain3])
-						checking2 = True
-					check3 = chain3.compare_sequence(interactions_dict[key][0][0])
-					if check3 == 2 or chain3.id == key:
-						interactions_dict[key].append([chain3, chain1])
-						interactions_dict[key].append([chain3, chain2])
-						checking3 = True
-				if checking1 == False:
-					interactions_dict[chain1.id]= [[chain1, chain2],[chain1,chain3]]
-				if checking2 == False:
-					interactions_dict[chain2.id]= [[chain2, chain1],[chain2,chain3]]
-				if checking3 == False:
-					interactions_dict[chain3.id]= [[chain3, chain1],[chain3,chain2]]
-
-
 		else: #if we don't have dna, only protein-protein interactions
 			chain1 = pair[0]
 			chain2 = pair[1]
