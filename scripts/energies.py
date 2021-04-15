@@ -4,6 +4,7 @@ from modeller import *
 from modeller.scripts import complete_pdb
 import pylab
 import modeller
+import sys
 
 
 def DOPE_Energy(model, output_path,verbose=False):
