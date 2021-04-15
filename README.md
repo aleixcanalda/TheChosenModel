@@ -118,7 +118,7 @@ To create the complex running TheChosenModel in the terminal, the following code
 
 ```{.sh}
 
-TheChosenModel.py -i home/examples/example1/1gzx/ -o home/examples/results/1gzx -f -v -e
+TheChosenModel.py -i home/user/TheChosenModel/examples/1gzx/ -o home/user/TheChosenModel/results/1gzx -f -v -e
 
 ```
 With this line what we are doing is giving as input (-i) the path to a folder containing the pairs of chain interactions that will form the macro-complex 1GZX (correct naming structure explained in the input argument section), the path to the output folder where we want to store the results (-o) and, if this folder already exists, we'll overwrite it (-f). Also, we will show on the terminal the different steps that the program is going through, to keep track of the process, with the verbose argument (-v). And lastly, we will calculate the energies of the resulting model as well as its energy profile.
@@ -129,7 +129,7 @@ This macro-complex is formed solely by DNA-protein interactions so, in order for
 
 ```{.sh}
 
-TheChosenModel.py -i home/examples/example2/2O61/ -o home/examples/results/2O61 -t home/examples/example2/template_file.pdb -m 4 -e -s home/examples/example2/stechiometry_file.txt
+TheChosenModel.py -i home/user/TheChosenModel/examples/2O61/2O61/ -o home/user/TheChosenModel/results/2O61 -t home/user/TheChosenModel/examples/2O61/infb_dna.pdb -m 4 -e -s home/user/TheChosenModel/examples/2O61/stechiometry.txt
 
 ```
 With this line what we are doing is first giving as input (-i) the folder containing the chain interactions that will form the macro-complex 2O61 and the output folder where we want to store the results (-o). Also, we will send the template ("template_file") for the DNA (-t), we will receive four different models (-m 4) and calculate the DOPE energy for each of them. Lastly, the path to an stechiometry file is provided (-s, required syntax for the stechiometry explained in the stechiometry argument section) and the program will try to satisfy it the best it can.
