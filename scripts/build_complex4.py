@@ -133,8 +133,6 @@ def get_interactions_dict(unique_chain_list, PDB_files, verbose=False, template=
 
 def parse_stech(nomen,stechiometry=None,verbose=False):
 	""" Obtain the stechiometry from the input file and from the interacting chains"""
-	print("Nomen:")
-	print(nomen)
 	nomen_unique={}
 	for keys in nomen.keys(): #here we create another stechiometry dictionary from the file names but this time without repeating values
 		for value in nomen[keys]:
@@ -336,7 +334,7 @@ def main_loop(unique_chains_list,interactions_dict, nomen,verbose=False, stechio
 
 def template_loop(unique_chains_list, interactions_dict, nomen, template, output_path, verbose=False, stechiometry=None):
 	""" Main function that adds all the chains to create the final model. This function takes into account a DNA template for DNA-prot interactions."""
-	print(interactions_dict)
+
 	id_set = set() #the way to start is the same as for the function "main_loop"
 	if stechiometry != None: 
 		stech_file, nomen_unique = parse_stech(nomen,stechiometry)
@@ -358,17 +356,15 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, output
 
 		for key in stech_file.keys():
 			problematic_keys[key] = 0
-		print(problematic_keys)
 
 	last_residue = 0
 	for residue in chain1:
 		last_residue += 1
 
 	for key in nomen_unique.keys(): #we go through every P19, Q189,...
-		print(key)
+
 		random.shuffle(nomen_unique[key]) #we shuffle the different proteins inside each P19,..
 		for ids in nomen_unique[key]: #we go through every protein in P19 to add them to the template
-			print(ids)
 			if stechiometry != None and problematic_keys != {}:
 				if problematic_keys[key] == int(stech_file[key]): #if the number of chains is equal to the stechiometry, we don't add more chains.
 					if verbose:
@@ -400,7 +396,6 @@ def template_loop(unique_chains_list, interactions_dict, nomen, template, output
 			fixed, moving = equal_length_chains(template, chosen_brother) #the rest is like in the "main_loop" function
 			chain_copy, not_added = superimpose(model, fixed, moving, the_chosen_one)
 			if not_added:
-				print(not_added)
 				continue
 			else:
 				id = chain_id(id_set)
