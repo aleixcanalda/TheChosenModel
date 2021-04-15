@@ -1,4 +1,5 @@
 # TheChosenModel
+by Aleix Canalda Baltrons and Maria Díaz Ros
 ## Software Requirements
 
 To be able to run the program smoothly and correctly, there are certain requirements that need to be met:
