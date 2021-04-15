@@ -31,7 +31,7 @@ while n < int(options.models):
 	n += 1
 
 if options.energy:
+	if options.verbose:
+		print("Calculating DOPE scores.")
 	for file in filenames:
-		if options.verbose:
-			print("Calculating DOPE score of %s"%file)
 		energy = DOPE_Energy(file, options.output_directory, options.verbose)
